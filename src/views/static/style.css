@@ -1,0 +1,76 @@
+body {
+    display: flex;
+}
+
+.sidebar {
+    min-width: 185px;
+    max-width: 185px;
+    height: 100vh;
+    color: white;
+    padding: 1rem;
+    transition: 0.5s ease-in-out;
+    overflow: hidden;
+}
+
+.sidebar .text {
+    transition-delay: 0.5s;
+}
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+    min-height: 40px;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.sidebar-header .icon {
+    font-size: 1.5rem;
+}
+
+
+.sidebar.minimized {
+    min-width: 85px;
+    max-width: 85px;
+}
+
+.sidebar.minimized .sidebar-header .title {
+    transition-delay: 0.5s;
+    display: none;
+}
+
+.sidebar.minimized .text {
+    display: none;
+}
+
+.sidebar.minimized .nav-link .icon {
+    margin-right: 0 !important;
+}
+
+.icon svg {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+}
+
+.nav-link.active{
+    animation: fadeInActive 1s ease;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 2rem;
+}
+
+@keyframes fadeInActive {
+    from {
+        color: var(--bs-nav-link-color); 
+        background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)); 
+    }
+    to { 
+        color: var(--bs-nav-pills-link-active-color);
+        background-color: var(--bs-nav-pills-link-active-bg); 
+    }
+}
