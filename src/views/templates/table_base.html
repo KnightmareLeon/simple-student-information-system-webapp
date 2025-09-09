@@ -23,4 +23,19 @@
         Add {{ header_var }}
     </button>
 </div>
+<table class="table">
+    <thead>
+        <tr>
+            {% block tableheader %}
+
+            {% endblock %}
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% block tablerow %}
+
+        {% endblock %}
+    </tbody>
+</table>
 {% endblock %}

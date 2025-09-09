@@ -27,3 +27,19 @@
     <line class="st0" x1="21" y1="24" x2="27" y2="24"/>
 </svg>
 {% endblock %}
+
+{% block tableheader %}
+<th>Code</th>
+<th>Name</th>
+<th>College Code</th>
+{% endblock %}
+
+{% block tablerow %}
+{% for r in records %}
+<tr>
+    <td>{{ r.Code }}</td>
+    <td>{{ r.Name }}</td>
+    <td>{{ r.CollegeCode }}</td>
+</tr>
+{% endfor %}
+{% endblock %}
