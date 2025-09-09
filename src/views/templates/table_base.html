@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+<div class="content-header d-flex flex-nowrap align-items-center gap-2 mb-3">
+    <input class="form-control flex-grow-1" type="search" placeholder="Search">
+    <select id="filter" class="form-select w-25 w-md-auto">
+        {% block filteroptions %}
+
+        {% endblock %}
+    </select>
+    <button class="btn btn-outline-success" type="submit">Search</button>
+</div>
+<div class="content-table-header d-flex flex-nowrap justify-content-between">
+    <h4>{{ header_var}} Records</h4>
+    <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#addRecordModal">
+        <span class="icon me-2">
+            {% block addbuttonicon %}
+
+            {% endblock %}
+        </span>
+        Add {{ header_var }}
+    </button>
+</div>
+{% endblock %}

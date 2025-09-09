@@ -7,15 +7,15 @@ def dashboard():
 
 @app.route("/colleges")
 def colleges():
-    return render_template("colleges.html", active_page = 'colleges')
+    return render_template("colleges.html", active_page = 'colleges', header_var='College')
 
 @app.route("/programs")
 def programs():
-    return render_template("programs.html", active_page = 'programs')
+    return render_template("programs.html", active_page = 'programs', header_var='Program')
 
 @app.route("/students")
 def students():
-    return render_template("students.html", active_page = 'students')
+    return render_template("students.html", active_page = 'students', header_var='Student')
 
 @app.route("/settings")
 def settings():
