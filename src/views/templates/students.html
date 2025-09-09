@@ -41,6 +41,74 @@
     <td>{{ r.Gender }}</td>
     <td>{{ r.YearLevel }}</td>
     <td>{{ r.ProgramCode }}</td>
+    {{ super() }}
 </tr>
 {% endfor %}
+{% endblock %}
+
+{% block addform %}
+<form id="addRecordForm" method="POST" action="/add_record">
+    <div class="mb-3">
+        <label for="recordID" class="form-label">ID Number</label>
+        <input type="text" class="form-control" id="recordID" name="recordID" required>
+    </div>
+    <div class="mb-3">
+        <label for="recordFirstName" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="recordFirstName" name="recordFirstName" required>
+    </div>
+        <div class="mb-3">
+        <label for="recordLastName" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="recordLastName" name="recordLastName" required>
+    </div>
+    <div class="mb-3">
+        <label for="recordGender" class="form-label me-3">Gender:</label>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="male" name="gender" value="M">
+            <label class="form-check-label" for="male">Male</label>
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="female" name="gender" value="F">
+            <label class="form-check-label" for="female">Female</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="lgbt" name="gender" value="L">
+            <label class="form-check-label" for="lgbt">LGBTQIA+</label>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="recordYearLevel" class="form-label me-3">Year Level:</label>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="yl1" name="yearLevel" value="1">
+            <label class="form-check-label" for="yl1">1</label>
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="yl2" name="yearLevel" value="2">
+            <label class="form-check-label" for="yl2">2</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="yl3" name="yearLevel" value="3">
+            <label class="form-check-label" for="yl3">3</label>
+        </div>
+                <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="yl4" name="yearLevel" value="4">
+            <label class="form-check-label" for="yl4">4</label>
+        </div>
+                <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="yl5" name="yearLevel" value="5">
+            <label class="form-check-label" for="yl5">5</label>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="recordProgramCode" class="form-label">Program Code</label>
+        <select class="form-select" id="recordProgramCode">
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+        </select>
+    </div>
+</form>
 {% endblock %}

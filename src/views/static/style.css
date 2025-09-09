@@ -65,6 +65,18 @@ body {
     width: 100%;
 }
 
+.table td.fit, .table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}
+
+tr button{
+    visibility: hidden;
+}
+
+tr:hover button{
+    visibility: visible;
+}
 @keyframes fadeInActive {
     from {
         color: var(--bs-nav-link-color); 

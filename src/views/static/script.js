@@ -11,3 +11,13 @@ $('#filter').editableSelect({
 	duration: 200,
     filter: false
 });
+
+$('#recordCollegeCode').editableSelect({
+	effects: 'slide',
+	duration: 200,
+});
+
+$('#recordProgramCode').editableSelect({
+	effects: 'slide',
+	duration: 200,
+});

@@ -40,6 +40,28 @@
     <td>{{ r.Code }}</td>
     <td>{{ r.Name }}</td>
     <td>{{ r.CollegeCode }}</td>
+    {{ super() }}
 </tr>
 {% endfor %}
+{% endblock %}
+
+{% block addform %}
+<form id="addRecordForm" method="POST" action="/add_record">
+    <div class="mb-3">
+        <label for="recordCode" class="form-label">Code</label>
+        <input type="text" class="form-control" id="recordCode" name="recordCode" required>
+    </div>
+    <div class="mb-3">
+        <label for="recordName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="recordName" name="recordName" required>
+    </div>
+    <div class="mb-3">
+        <label for="recordCollegeCode" class="form-label">College Code</label>
+        <select class="form-select" id="recordCollegeCode">
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+        </select>
+    </div>
+</form>
 {% endblock %}
