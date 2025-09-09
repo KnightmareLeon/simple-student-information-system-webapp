@@ -1,25 +1,16 @@
 from flask import Flask, render_template
+from src.controllers.dashboardController import dashboard_bp
+from src.controllers.collegesController import colleges_bp
+from src.controllers.programsController import programs_bp
+from src.controllers.studentsController import students_bp
+from src.controllers.settingsController import settings_bp
+
 app = Flask(__name__, template_folder="src/views/templates", static_folder="src/views/static")
 
-@app.route("/")
-def dashboard():
-    return render_template("dashboard.html", active_page = "dashboard")
-
-@app.route("/colleges")
-def colleges():
-    return render_template("colleges.html", active_page = 'colleges', header_var='College')
-
-@app.route("/programs")
-def programs():
-    return render_template("programs.html", active_page = 'programs', header_var='Program')
-
-@app.route("/students")
-def students():
-    return render_template("students.html", active_page = 'students', header_var='Student')
-
-@app.route("/settings")
-def settings():
-    return render_template("settings.html", active_page = 'settings')
-
+app.register_blueprint(dashboard_bp)
+app.register_blueprint(colleges_bp)
+app.register_blueprint(programs_bp)
+app.register_blueprint(students_bp)
+app.register_blueprint(settings_bp)
 if __name__ == "__main__":
     app.run(debug=True)
