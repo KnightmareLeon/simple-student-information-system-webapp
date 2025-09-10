@@ -10,4 +10,4 @@ def index():
     global records
     if(len(records) == 0):
         records = CollegesModel.getRecords()
-    return render_template("colleges.html", active_page = 'colleges', header_var='College', records=records)
+    return render_template("colleges/index.html", active_page = 'colleges', header_var='College', records=records)

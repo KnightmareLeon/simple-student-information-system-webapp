@@ -10,4 +10,4 @@ def index():
     global records
     if(len(records) == 0):
         records = ProgramsModel.getRecords()
-    return render_template("programs.html", active_page = 'programs', header_var='Program', records=records)
+    return render_template("programs/index.html", active_page = 'programs', header_var='Program', records=records)

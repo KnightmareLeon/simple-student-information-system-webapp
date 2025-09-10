@@ -29,24 +29,19 @@
 {% endblock %}
 
 {% block tablerow %}
-{% for r in records %}
-<tr>
-    <td>{{ r.Code }}</td>
-    <td>{{ r.Name }}</td>
-    {{ super() }}
-</tr>
-{% endfor %}
+    {% for r in records %}
+        <tr>
+            <td>{{ r.Code }}</td>
+            <td>{{ r.Name }}</td>
+            {% with key=r.Code %}
+                {% include "partials/_row_buttons.html"  %}
+            {% endwith %}
+        </tr>
+        {% with key=r.Code %}
+            {% include "colleges/partials/_update_modal.html" %}
+        {% endwith %}
+    {% endfor %}
 {% endblock %}
 
-{% block addform %}
-<form id="addRecordForm" method="POST" action="/add_record">
-    <div class="mb-3">
-        <label for="recordCode" class="form-label">Code</label>
-        <input type="text" class="form-control" id="recordCode" name="recordCode" required>
-    </div>
-    <div class="mb-3">
-        <label for="recordName" class="form-label">Name</label>
-        <input type="text" class="form-control" id="recordName" name="recordName" required>
-    </div>
-</form>
-{% endblock %}
+{% include "colleges/partials/_create_modal.html" %}
+

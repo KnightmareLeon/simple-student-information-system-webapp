@@ -1,0 +1,9 @@
+{% extends "partials/_base_record_modal.html" %}
+
+{% block modal_body %}
+    {% include "students/partials/_form.html" %}
+{% endblock %}
+
+{% set modal_id = "addRecordModal" %}
+{% set title = "Add New " ~ header_var ~ " Record" %}
+{% set arial_label = "addRecordModalLabel" %}

@@ -1,0 +1,9 @@
+{% extends "partials/_base_record_modal.html" %}
+
+{% block modal_body %}
+    {% include "programs/partials/_form.html" %}
+{% endblock %}
+
+{% set modal_id = "editRecordModal" ~ key %}
+{% set title = "Edit " ~ header_var ~ " Record" %}
+{% set arial_label = "editRecordModalLabel" %}
