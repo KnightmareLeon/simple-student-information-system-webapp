@@ -3,6 +3,7 @@ from src.models.programsModel import ProgramsModel
 
 programs_bp = Blueprint("programs", __name__)
 current_page : int = 1
+max_page : int = 1
 records : list[dict] = []
 
 @programs_bp.route("/programs")
@@ -10,4 +11,4 @@ def index():
     global records
     if(len(records) == 0):
         records = ProgramsModel.getRecords()
-    return render_template("programs/index.html", active_page = 'programs', header_var='Program', records=records)
+    return render_template("programs/index.html", active_page = 'programs', header_var='Program', records=records, current_page=current_page, max_page=max_page)
