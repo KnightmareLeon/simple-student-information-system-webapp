@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Uniflow Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex px-5 align-items-center flex-nowrap justify-content-between">
+
+    {% include "dashboard/partials/_student_card.html" %}
+    {% include "dashboard/partials/_program_card.html" %}
+    {% include "dashboard/partials/_college_card.html" %}
+{% endblock %}
