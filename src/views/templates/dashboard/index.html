@@ -3,9 +3,9 @@
 {% block title %}Uniflow Dashboard{% endblock %}
 
 {% block content %}
-<div class="d-flex px-5 align-items-center flex-nowrap justify-content-between">
-
+<div class="row row-cols-1 row-cols-md-4 g-4 d-flex justify-content-center">
     {% include "dashboard/partials/_student_card.html" %}
     {% include "dashboard/partials/_program_card.html" %}
     {% include "dashboard/partials/_college_card.html" %}
+</div>
 {% endblock %}
