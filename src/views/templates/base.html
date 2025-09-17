@@ -100,7 +100,7 @@
         </nav>
 
         <!-- Main Content -->
-        <div class="content col d-flex flex-column vh-100">
+        <div class="content col d-flex flex-column vh-100 bg-content text-light">
             {% block content %}
 
             {% endblock %}
@@ -117,6 +117,8 @@
     <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
     <!-- DataTables + Bootstrap JS -->
     <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom Script-->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </div>

@@ -3,8 +3,8 @@
 {% block title %} {% endblock %}
 
 {% block content %}
-<div class="content-table-header d-flex flex-nowrap justify-content-between border-bottom py-3">
-    <h4>{{ header_var}} Records</h4>
+<div class="content-table-header d-flex flex-wrap justify-content-between border-bottom py-3 align-items-center">
+    <h4 class="mb-2 mb-md-0">{{ header_var}} Records</h4>
     <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#addRecordModal">
         <span class="icon me-2">
             {% block addbuttonicon %}
@@ -15,7 +15,7 @@
     </button>
 </div>
 <div class="table-responsive flex-grow-1">
-    <table id="{{header_var}}Table" class="table shadow table-striped table-hover">
+    <table id="{{header_var}}Table" class="table table-dark shadow table-striped table-hover">
         <thead>
             <tr>
                 {% block tableheader %}
