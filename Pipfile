@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 flask = "*"
 python-dotenv = "*"
+psycopg2-binary = "*"
+flask-login = "*"
 
 [dev-packages]
 pytest = "*"
