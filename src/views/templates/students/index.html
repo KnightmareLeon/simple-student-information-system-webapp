@@ -31,7 +31,7 @@
             <td>{{ r.Gender }}</td>
             <td>{{ r.YearLevel }}</td>
             <td>{{ r.ProgramCode }}</td>
-            {% with key=r.ID %}
+            {% with key=r.ID, pKeys=reqPKeys %}
                 {% include "partials/_row_buttons.html"  %}
             {% endwith %}
         </tr>
@@ -41,4 +41,6 @@
     {% endfor %}
 {% endblock %}
 
-{% include "students/partials/_create_modal.html" %}
+{% with pKeys=reqPKeys %}
+    {% include "students/partials/_create_modal.html" %}
+{% endwith %}

@@ -50,15 +50,15 @@
         </div>
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" id="yl5" name="yearLevel" value="5">
-            <label class="form-check-label" for="yl5">5</label>
+            <label class="form-check-label" for="yl5">5+</label>
         </div>
     </div>
     <div class="mb-3">
         <label for="recordProgramCode" class="form-label">Program Code</label>
         <select class="selectpicker" data-live-search="true">
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
+            {% for pk in pKeys %}
+            <option value="{{pk.Code}}">{{pk.Code}}</option>
+            {% endfor %}
         </select>
     </div>
 </form>

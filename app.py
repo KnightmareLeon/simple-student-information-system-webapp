@@ -1,9 +1,9 @@
 from flask import Flask, render_template
-from src.controllers.dashboardController import dashboard_bp
-from src.controllers.collegesController import colleges_bp
-from src.controllers.programsController import programs_bp
-from src.controllers.studentsController import students_bp
-from src.controllers.settingsController import settings_bp
+from src.controllers.DashboardController import dashboard_bp
+from src.controllers.CollegesController import colleges_bp
+from src.controllers.ProgramsController import programs_bp
+from src.controllers.StudentsController import students_bp
+from src.controllers.SettingsController import settings_bp
 
 app = Flask(__name__, template_folder="src/views/templates", static_folder="src/views/static")
 

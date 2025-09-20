@@ -10,9 +10,9 @@
     <div class="mb-3">
         <label for="recordCollegeCode" class="form-label">College Code</label>
         <select class="selectpicker" data-live-search="true">
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
+            {% for pk in pKeys %}
+            <option value="{{pk.Code}}">{{pk.Code}}</option>
+            {% endfor %}
         </select>
     </div>
 </form>

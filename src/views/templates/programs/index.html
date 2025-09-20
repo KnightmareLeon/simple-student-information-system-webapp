@@ -37,10 +37,12 @@
                 {% include "partials/_row_buttons.html"  %}
             {% endwith %}
         </tr>
-        {% with key=r.Code %}
+        {% with key=r.Code, pKeys=reqPKeys %}
             {% include "programs/partials/_update_modal.html" %}
         {% endwith %}
     {% endfor %}
 {% endblock %}
 
-{% include "programs/partials/_create_modal.html" %}
+{% with pKeys=reqPKeys %}
+    {% include "programs/partials/_create_modal.html" %}
+{% endwith %}

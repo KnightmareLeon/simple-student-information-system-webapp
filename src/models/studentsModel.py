@@ -1,59 +1,6 @@
-class StudentsModel():
+from .BaseTableModel import BaseTableModel
 
-    @staticmethod
-    def getRecords():
+class StudentsModel(BaseTableModel):
 
-        return [
-            {'ID' : '2023-3411', 'FirstName' : 'Leonard John', 'LastName' : 'Corpuz', 'Gender' : 'M', 'YearLevel' : '3', 'ProgramCode' : 'BSCS'},
-            {'ID' : '2023-3469', 'FirstName' : 'John Leonard', 'LastName' : 'Corpuz', 'Gender' : 'M', 'YearLevel' : '3', 'ProgramCode' : 'BSCE'},
-            {'ID': '2023-3470', 'FirstName': 'John', 'LastName': 'Doe', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3471', 'FirstName': 'Jane', 'LastName': 'Doe', 'Gender': 'F', 'YearLevel': '1', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3472', 'FirstName': 'Alice', 'LastName': 'Smith', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3473', 'FirstName': 'Bob', 'LastName': 'Smith', 'Gender': 'M', 'YearLevel': '2', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3474', 'FirstName': 'Charlie', 'LastName': 'Brown', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3475', 'FirstName': 'David', 'LastName': 'Johnson', 'Gender': 'M', 'YearLevel': '4', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3476', 'FirstName': 'Eve', 'LastName': 'Johnson', 'Gender': 'F', 'YearLevel': '1', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3477', 'FirstName': 'Frank', 'LastName': 'Miller', 'Gender': 'M', 'YearLevel': '2', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3478', 'FirstName': 'Grace', 'LastName': 'Miller', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3479', 'FirstName': 'Hank', 'LastName': 'Taylor', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3480', 'FirstName': 'Ivy', 'LastName': 'Taylor', 'Gender': 'F', 'YearLevel': '4', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3481', 'FirstName': 'Jack', 'LastName': 'Wilson', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3482', 'FirstName': 'Kathy', 'LastName': 'Wilson', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3483', 'FirstName': 'Leo', 'LastName': 'Anderson', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3484', 'FirstName': 'Mia', 'LastName': 'Anderson', 'Gender': 'F', 'YearLevel': '4', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3485', 'FirstName': 'Nick', 'LastName': 'Thomas', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3486', 'FirstName': 'Olivia', 'LastName': 'Thomas', 'Gender': 'F', 'YearLevel': '1', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3487', 'FirstName': 'Paul', 'LastName': 'Moore', 'Gender': 'M', 'YearLevel': '2', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3488', 'FirstName': 'Quinn', 'LastName': 'Moore', 'Gender': 'F', 'YearLevel': '3', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3489', 'FirstName': 'Ray', 'LastName': 'Jackson', 'Gender': 'M', 'YearLevel': '4', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3490', 'FirstName': 'Sophia', 'LastName': 'Jackson', 'Gender': 'F', 'YearLevel': '1', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3491', 'FirstName': 'Tom', 'LastName': 'White', 'Gender': 'M', 'YearLevel': '2', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3492', 'FirstName': 'Uma', 'LastName': 'White', 'Gender': 'F', 'YearLevel': '3', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3493', 'FirstName': 'Victor', 'LastName': 'Harris', 'Gender': 'M', 'YearLevel': '4', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3494', 'FirstName': 'Wendy', 'LastName': 'Harris', 'Gender': 'F', 'YearLevel': '1', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3495', 'FirstName': 'Xavier', 'LastName': 'Martin', 'Gender': 'M', 'YearLevel': '2', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3496', 'FirstName': 'Yara', 'LastName': 'Martin', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3497', 'FirstName': 'Zack', 'LastName': 'Clark', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3498', 'FirstName': 'Anna', 'LastName': 'Clark', 'Gender': 'F', 'YearLevel': '4', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3499', 'FirstName': 'Brian', 'LastName': 'Lewis', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3500', 'FirstName': 'Clara', 'LastName': 'Lewis', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3501', 'FirstName': 'Daniel', 'LastName': 'Walker', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3502', 'FirstName': 'Ella', 'LastName': 'Walker', 'Gender': 'F', 'YearLevel': '4', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3503', 'FirstName': 'Finn', 'LastName': 'Hall', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3504', 'FirstName': 'Gina', 'LastName': 'Hall', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3505', 'FirstName': 'Henry', 'LastName': 'Allen', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3506', 'FirstName': 'Isla', 'LastName': 'Allen', 'Gender': 'F', 'YearLevel': '4', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3507', 'FirstName': 'James', 'LastName': 'Young', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3508', 'FirstName': 'Karen', 'LastName': 'Young', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3509', 'FirstName': 'Liam', 'LastName': 'King', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3510', 'FirstName': 'Maya', 'LastName': 'King', 'Gender': 'F', 'YearLevel': '4', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3511', 'FirstName': 'Noah', 'LastName': 'Scott', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3512', 'FirstName': 'Olga', 'LastName': 'Scott', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3513', 'FirstName': 'Peter', 'LastName': 'Adams', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3514', 'FirstName': 'Queenie', 'LastName': 'Adams', 'Gender': 'F', 'YearLevel': '4', 'ProgramCode': 'BSEE'},
-            {'ID': '2023-3515', 'FirstName': 'Robert', 'LastName': 'Baker', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSCS'},
-            {'ID': '2023-3516', 'FirstName': 'Sara', 'LastName': 'Baker', 'Gender': 'F', 'YearLevel': '2', 'ProgramCode': 'BSIT'},
-            {'ID': '2023-3517', 'FirstName': 'Tim', 'LastName': 'Carter', 'Gender': 'M', 'YearLevel': '3', 'ProgramCode': 'BSCE'},
-            {'ID': '2023-3518', 'FirstName': 'Ursula', 'LastName': 'Carter', 'Gender': 'F', 'YearLevel': '4', 'ProgramCode': 'BSME'},
-            {'ID': '2023-3519', 'FirstName': 'Victor', 'LastName': 'Evans', 'Gender': 'M', 'YearLevel': '1', 'ProgramCode': 'BSEE'}
-        ]
+    _table_name = "students"
+    _primary = "ID"

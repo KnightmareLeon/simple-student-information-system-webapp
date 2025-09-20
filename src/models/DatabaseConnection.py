@@ -1,4 +1,5 @@
 import psycopg2
+import psycopg2.extras
 from dotenv import load_dotenv
 import os
 
@@ -8,6 +9,7 @@ class DatabaseConnection:
     """
     
     __db = None
+    real_dict = psycopg2.extras.RealDictCursor
 
     @staticmethod
     def start_connection():
