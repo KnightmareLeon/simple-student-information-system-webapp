@@ -1,9 +1,14 @@
 {% extends "partials/_base_record_modal.html" %}
 
 {% block modal_body %}
-    {% include "students/partials/_form.html" %}
+    <div id="addStudentFormAlert" class="alert d-none" role="alert"></div>
+    {% with form_id="addStudentForm", action_url=url_for('students.add_student'), pKeys=pKeys %}
+        {% include "students/partials/_form.html" %}
+    {% endwith %}
 {% endblock %}
 
-{% set modal_id = "addRecordModal" %}
+{% set modal_id = "addStudentModal" %}
+{% set modal_label = "addStudentModalLabel" %}
+{% set form_type = "addStudentForm" %}
 {% set title = "Add New " ~ header_var ~ " Record" %}
-{% set arial_label = "addRecordModalLabel" %}
+{% set arial_label = "addStudentModalLabel" %}

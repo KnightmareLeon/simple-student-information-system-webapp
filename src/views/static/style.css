@@ -70,8 +70,8 @@ body {
 }
 
 .table td.fit, .table th.fit {
-    white-space: nowrap;
-    width: 1%;
+    white-space: nowrap !important;
+    width: 1% !important;
 }
 
 tr button{
@@ -97,6 +97,13 @@ tr:hover button{
 .dashboard-header .card:hover .card-body .display-4 {
     transform: scale(1.1);
 }
+
+.button-container {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
 @keyframes fadeInActive {
     from {
         color: var(--bs-nav-link-color); 

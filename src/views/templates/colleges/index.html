@@ -22,20 +22,6 @@
 <th>Name</th>
 {% endblock %}
 
-{% block tablerow %}
-    {% for r in records %}
-        <tr>
-            <td>{{ r.Code }}</td>
-            <td>{{ r.Name }}</td>
-            {% with key=r.Code %}
-                {% include "partials/_row_buttons.html"  %}
-            {% endwith %}
-        </tr>
-        {% with key=r.Code %}
-            {% include "colleges/partials/_update_modal.html" %}
-        {% endwith %}
-    {% endfor %}
-{% endblock %}
-
 {% include "colleges/partials/_create_modal.html" %}
+{% include "colleges/partials/_update_modal.html" %}
 

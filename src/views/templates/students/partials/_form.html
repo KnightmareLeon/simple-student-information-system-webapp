@@ -3,61 +3,62 @@
         <label for="recordID" class="form-label">ID Number</label>
         <input type="text" class="form-control" id="recordID" name="recordID" required>
     </div>
+
     <div class="mb-3">
         <label for="recordFirstName" class="form-label">First Name</label>
         <input type="text" class="form-control" id="recordFirstName" name="recordFirstName" required>
     </div>
-        <div class="mb-3">
+
+    <div class="mb-3">
         <label for="recordLastName" class="form-label">Last Name</label>
         <input type="text" class="form-control" id="recordLastName" name="recordLastName" required>
     </div>
-    <div class="mb-3">
-        <label for="recordGender" class="form-label me-3">Gender:</label>
 
+    <div class="mb-3">
+        <label class="form-label me-3">Gender:</label>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="male" name="gender" value="M">
+            <input class="form-check-input" type="radio" id="male" name="gender" value="Male" required>
             <label class="form-check-label" for="male">Male</label>
         </div>
-
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="female" name="gender" value="F">
+            <input class="form-check-input" type="radio" id="female" name="gender" value="Female" required>
             <label class="form-check-label" for="female">Female</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="lgbt" name="gender" value="L">
+            <input class="form-check-input" type="radio" id="lgbt" name="gender" value="LGBTQIA+" required>
             <label class="form-check-label" for="lgbt">LGBTQIA+</label>
         </div>
     </div>
-    <div class="mb-3">
-        <label for="recordYearLevel" class="form-label me-3">Year Level:</label>
 
+    <div class="mb-3">
+        <label class="form-label me-3">Year Level:</label>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="yl1" name="yearLevel" value="1">
+            <input class="form-check-input" type="radio" id="yl1" name="yearLevel" value="1" required>
             <label class="form-check-label" for="yl1">1</label>
         </div>
-
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="yl2" name="yearLevel" value="2">
+            <input class="form-check-input" type="radio" id="yl2" name="yearLevel" value="2" required>
             <label class="form-check-label" for="yl2">2</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="yl3" name="yearLevel" value="3">
+            <input class="form-check-input" type="radio" id="yl3" name="yearLevel" value="3" required>
             <label class="form-check-label" for="yl3">3</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="yl4" name="yearLevel" value="4">
+            <input class="form-check-input" type="radio" id="yl4" name="yearLevel" value="4" required>
             <label class="form-check-label" for="yl4">4</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="yl5" name="yearLevel" value="5">
+            <input class="form-check-input" type="radio" id="yl5" name="yearLevel" value="5" required>
             <label class="form-check-label" for="yl5">5+</label>
         </div>
     </div>
+
     <div class="mb-3">
-        <label for="recordProgramCode" class="form-label">Program Code</label>
-        <select class="selectpicker" data-live-search="true">
+        <label for="recordForeignProgramCode" class="form-label">Program Code</label>
+        <select class="selectpicker" data-live-search="true" name="recordForeignProgramCode" required>
             {% for pk in pKeys %}
-            <option value="{{pk.Code}}">{{pk.Code}}</option>
+                <option value="{{ pk.Code }}">{{ pk.Code }}</option>
             {% endfor %}
         </select>
     </div>

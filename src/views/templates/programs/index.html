@@ -27,22 +27,7 @@
 <th>College Code</th>
 {% endblock %}
 
-{% block tablerow %}
-    {% for r in records %}
-        <tr>
-            <td>{{ r.Code }}</td>
-            <td>{{ r.Name }}</td>
-            <td>{{ r.CollegeCode }}</td>
-            {% with key=r.Code %}
-                {% include "partials/_row_buttons.html"  %}
-            {% endwith %}
-        </tr>
-        {% with key=r.Code, pKeys=reqPKeys %}
-            {% include "programs/partials/_update_modal.html" %}
-        {% endwith %}
-    {% endfor %}
-{% endblock %}
-
 {% with pKeys=reqPKeys %}
     {% include "programs/partials/_create_modal.html" %}
+    {% include "programs/partials/_update_modal.html" %}
 {% endwith %}

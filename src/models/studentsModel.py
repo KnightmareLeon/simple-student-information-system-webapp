@@ -1,3 +1,4 @@
+from .DatabaseConnection import DatabaseConnection
 from .BaseTableModel import BaseTableModel
 
 class StudentsModel(BaseTableModel):

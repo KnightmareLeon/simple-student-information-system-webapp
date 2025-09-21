@@ -22,25 +22,7 @@
 <th>Program Code</th>
 {% endblock %}
 
-{% block tablerow %}
-    {% for r in records %}
-        <tr>
-            <td>{{ r.ID }}</td>
-            <td>{{ r.FirstName }}</td>
-            <td>{{ r.LastName }}</td>
-            <td>{{ r.Gender }}</td>
-            <td>{{ r.YearLevel }}</td>
-            <td>{{ r.ProgramCode }}</td>
-            {% with key=r.ID, pKeys=reqPKeys %}
-                {% include "partials/_row_buttons.html"  %}
-            {% endwith %}
-        </tr>
-        {% with key=r.ID %}
-            {% include "students/partials/_update_modal.html" %}
-        {% endwith %}
-    {% endfor %}
-{% endblock %}
-
 {% with pKeys=reqPKeys %}
     {% include "students/partials/_create_modal.html" %}
+    {% include "students/partials/_update_modal.html" %}
 {% endwith %}
