@@ -267,8 +267,8 @@ class BaseTableModel(ABC):
 
         try:
             cursor = DatabaseConnection.get_connection().cursor()
-            sql = f"DELETE FROM {cls.get_table_name()} WHERE {cls._primary} = {key})"
-            cursor.execute(sql)
+            sql = f"DELETE FROM {cls.get_table_name()} WHERE \"{cls._primary}\" = %s"
+            cursor.execute(sql, (key,))
         except Exception as e:
             print(f"Error: {e}")
             raise e

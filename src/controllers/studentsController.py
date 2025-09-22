@@ -1,16 +1,16 @@
-from flask import Blueprint, jsonify, render_template, request, url_for
+from flask import Blueprint, Response, jsonify, render_template, request, url_for
 from src.models.StudentsModel import StudentsModel
 from src.models.ProgramsModel import ProgramsModel
 
 students_bp = Blueprint("students", __name__)
 
 @students_bp.route("/students")
-def index():
+def index() -> str:
     reqPKeys = ProgramsModel.get_aLL_pkeys()
     return render_template("students/index.html", active_page = 'students', header_var='Student', reqPKeys=reqPKeys)
 
 @students_bp.route("/students/data", methods=["POST"])
-def data():
+def data() -> Response:
     draw = int(request.form.get("draw", 1))
     start = int(request.form.get("start", 0))
     length = int(request.form.get("length", 10))
@@ -45,7 +45,7 @@ def data():
     })
 
 @students_bp.route("/students/add", methods=["POST"])
-def add_student():
+def add_student() -> Response:
     id = request.form.get("recordID")
     fname = request.form.get("recordFirstName")
     lname = request.form.get("recordLastName")
@@ -55,11 +55,23 @@ def add_student():
 
     if StudentsModel.record_exists("ID", id):
         return jsonify({"status": "error", "message": f"ID {id} already exists"})
-    
-    new_data = {"ID" : id, "FirstName" : fname, "LastName" : lname, "Gender" : gender, "YearLevel" : yLevel, "ProgramCode" : program_code}
-    StudentsModel.create(new_data)
+
+    try:
+        new_data = {"ID" : id, "FirstName" : fname, "LastName" : lname, "Gender" : gender, "YearLevel" : yLevel, "ProgramCode" : program_code}
+        StudentsModel.create(new_data)
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"An error occurred when adding student '{fname} {lname}' with ID Number {id}."})
 
     return jsonify({"status": "success", "message": f"Student '{fname} {lname}' with ID Number {id} added successfully!"})
+
+@students_bp.route("/students/delete/<string:id>", methods=["POST"])
+def delete_college(id : str) -> Response:
+    try:
+        StudentsModel.delete(id)
+    except Exception as e:
+        return jsonify({"status": "error", "message": "Student record deletion failed."}), 404
+
+    return jsonify({"status": "success", "message": f"Student with ID number '{id}' deleted successfully!"})
 
 @students_bp.route("/students/check_duplicates")
 def check_duplicates():

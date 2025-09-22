@@ -6,6 +6,23 @@ toggleHeader.addEventListener('click', () => {
     document.cookie = "sidebar=" + (sidebar.classList.contains('minimized') ? "minimized" : "expanded") + ";path=/";
 });
 
+function showToast(message, type = "success", position = "top-0 start-50 translate-middle-x") {
+    const $toast = $('#mainToast');
+    const $container = $('#toastContainer');
+
+    $container.removeClass().addClass(`position-fixed ${position} p-3`).css('z-index', 1100);
+
+    $toast.removeClass("text-bg-success text-bg-danger text-bg-warning");
+    if (type === "success") $toast.addClass("text-bg-success");
+    if (type === "error") $toast.addClass("text-bg-danger");
+    if (type === "warning") $toast.addClass("text-bg-warning");
+
+    $('#toastBody').text(message);
+
+    const toast = new bootstrap.Toast($toast[0]);
+    toast.show();
+}
+
 function setupTableModal(formSelector, modalSelector, alertSelector, tableSelector) {
     $(modalSelector).on('show.bs.modal', function () {
         $(alertSelector).addClass('d-none').removeClass('alert-success alert-danger').text('');
@@ -16,13 +33,29 @@ function setupTableModal(formSelector, modalSelector, alertSelector, tableSelect
     $(formSelector).submit(function(e) {
         e.preventDefault();
         $.post($(this).attr('action'), $(this).serialize(), function(resp) {
-            const $alert = $(alertSelector);
             if (resp.status === "success") {
-                $alert.removeClass('d-none alert-danger').addClass('alert-success').text(resp.message);
                 $(tableSelector).DataTable().ajax.reload(null, false);
-                setTimeout(() => $(modalSelector).modal('hide'), 1000);
+                $(modalSelector).modal('hide');
+                showToast(resp.message, "success");
             } else {
-                $alert.removeClass('d-none alert-success').addClass('alert-danger').text(resp.message);
+                showToast(resp.message, "error");
+            }
+        });
+    });
+}
+
+function setupDeleteHandler(tableSelector, entity) {
+    $(tableSelector).on('click', '.delete-btn', function () {
+        const recordId = $(this).data('id');
+
+        if (!confirm("Are you sure you want to delete this record?")) return;
+
+        $.post(`/${entity}/delete/${recordId}`, function (resp) {
+            if (resp.status === "success") {
+                $(tableSelector).DataTable().ajax.reload(null, false);
+                showToast(resp.message, "success");
+            } else {
+                showToast(resp.message, "error");
             }
         });
     });
@@ -129,6 +162,10 @@ let studentTable = $('#StudentTable').DataTable({
 setupTableModal('#addCollegeForm', '#addCollegeModal', '#addCollegeFormAlert', '#CollegeTable');
 setupTableModal('#addProgramForm', '#addProgramModal', '#addProgramFormAlert', '#ProgramTable');
 setupTableModal('#addStudentForm', '#addStudentModal', '#addStudentFormAlert', '#StudentTable');
+
+setupDeleteHandler('#CollegeTable','colleges');
+setupDeleteHandler('#ProgramTable','programs');
+setupDeleteHandler('#StudentTable','students');
 
 $('#ProgramTable').on('click', '.edit-btn', function () {
     let id = $(this).data('id');

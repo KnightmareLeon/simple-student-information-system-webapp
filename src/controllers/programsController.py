@@ -1,16 +1,16 @@
-from flask import Blueprint, flash, redirect, render_template, request, jsonify, url_for
+from flask import Blueprint, Response, flash, redirect, render_template, request, jsonify, url_for
 from src.models.ProgramsModel import ProgramsModel
 from src.models.CollegesModel import CollegesModel
 
 programs_bp = Blueprint("programs", __name__)
 
 @programs_bp.route("/programs")
-def index():
+def index() -> str:
     reqPKeys = CollegesModel.get_aLL_pkeys()
     return render_template("programs/index.html", active_page = 'programs', header_var='Program', reqPKeys=reqPKeys)
 
 @programs_bp.route("/programs/data", methods=["POST"])
-def data():
+def data() -> Response:
     draw = int(request.form.get("draw", 1))
     start = int(request.form.get("start", 0))
     length = int(request.form.get("length", 10))
@@ -33,7 +33,6 @@ def data():
 
     for r in records:
         r["actions"] = render_template("partials/_row_buttons.html", key=r["Code"])
-        r["modal"] = render_template("programs/partials/_update_modal.html", key=r["Code"], pKeys=reqPKeys)
 
     total_records = ProgramsModel.get_total()
 
@@ -45,7 +44,7 @@ def data():
     })
 
 @programs_bp.route("/programs/add", methods=["POST"])
-def add_program():
+def add_program() -> Response:
     code = request.form.get("recordProgramPrimaryCode")
     name = request.form.get("recordProgramName")
     college_code = request.form.get("recordForeignCollegeCode")
@@ -53,14 +52,27 @@ def add_program():
     code_dup = ProgramsModel.record_exists("Code", code)
     name_dup =  ProgramsModel.record_exists("Name", name)
     if code_dup or name_dup:
-        message = ''
-        message += f"Program code '{code}' already exists! " if code_dup else ""
-        message += f"Program name '{name}' already exists!" if name_dup else ""
-        return jsonify({"status": "error", "message": message})
-    new_data = {"Code" : code, "Name" : name, "CollegeCode" : college_code}
-    ProgramsModel.create(new_data)
+        message = []
+        message.append(f"Program code '{code}' already exists! " if code_dup else "")
+        message.append(f"Program name '{name}' already exists!" if name_dup else "")
+        return jsonify({"status": "error", "message": " , ".join(message)})
+    
+    try:
+        new_data = {"Code" : code, "Name" : name, "CollegeCode" : college_code}
+        ProgramsModel.create(new_data)
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"An error occurred when adding program '{code}'."})
 
     return jsonify({"status": "success", "message": f"Program '{name}' added successfully!"})
+
+@programs_bp.route("/programs/delete/<string:code>", methods=["POST"])
+def delete_program(code : str) -> Response:
+    try:
+        ProgramsModel.delete(code)
+    except Exception as e:
+        return jsonify({"status": "error", "message": "Program record deletion failed."}), 404
+
+    return jsonify({"status": "success", "message": f"Program '{code}' deleted successfully!"})
 
 @programs_bp.route("/programs/<string:code>/edit-form")
 def edit_form(code):
