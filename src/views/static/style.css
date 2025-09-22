@@ -16,7 +16,7 @@ body {
     overflow: hidden;
 }
 
-.sidebar-header {
+.sidebar-header, .offcanvas-header {
     display: flex;
     align-items: center;
     padding-left: 1rem;
