@@ -77,8 +77,8 @@ class BaseTableModel(ABC):
 
         try:
             cursor = DatabaseConnection.get_connection().cursor(cursor_factory=DatabaseConnection.real_dict)
-            sql = f"SELECT * FROM {cls.get_table_name()} WHERE {cls.get_primary_key()} = {id}"
-            cursor.execute(sql)
+            query = f"SELECT * FROM {cls.get_table_name()} WHERE \"{cls.get_primary_key()}\" = %s"
+            cursor.execute(query, (id,))
 
             result = cursor.fetchone()
         except Exception as e:

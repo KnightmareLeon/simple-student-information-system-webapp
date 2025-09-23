@@ -1,15 +1,15 @@
 <form id="{{ form_id }}" method="POST" action="{{ action_url }}">
     <div class="mb-3">
-        <label for="recordProgramPrimaryCode" class="form-label">Code</label>
-        <input type="text" class="form-control" id="recordProgramPrimaryCode" name="recordProgramPrimaryCode" required>
+        <label for="{{form_action}}ProgramPrimaryCode" class="form-label">Code</label>
+        <input type="text" class="form-control" id="{{form_action}}ProgramPrimaryCode" name="{{form_action}}ProgramPrimaryCode" required>
     </div>
     <div class="mb-3">
-        <label for="recordProgramName" class="form-label">Name</label>
-        <input type="text" class="form-control" id="recordProgramName" name="recordProgramName" required>
+        <label for="{{form_action}}ProgramName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="{{form_action}}ProgramName" name="{{form_action}}ProgramName" required>
     </div>
     <div class="mb-3">
-        <label for="recordForeignyCollegeCode" class="form-label">College Code</label>
-        <select class="selectpicker" data-live-search="true" name="recordForeignCollegeCode" required>
+        <label for="{{form_action}}ForeignyCollegeCode" class="form-label">College Code</label>
+        <select class="selectpicker" data-live-search="true" name="{{form_action}}ForeignCollegeCode" required>
             {% for pk in pKeys %}
             <option value="{{pk.Code}}">{{pk.Code}}</option>
             {% endfor %}

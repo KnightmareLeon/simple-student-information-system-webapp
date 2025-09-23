@@ -1,9 +1,13 @@
 {% extends "partials/_base_record_modal.html" %}
 
 {% block modal_body %}
-    {% include "students/partials/_form.html" %}
+    {% with form_action = "edit", pKeys=pKeys %}
+        {% include "students/partials/_form.html" %}
+    {% endwith %}
 {% endblock %}
 
-{% set modal_id = "editRecordModal" ~ key %}
+{% set modal_id = "editStudentModal" ~ key %}
+{% set modal_label = "editStudentModalLabel" %}
+{% set form_type = "editStudentForm" %}
 {% set title = "Edit " ~ header_var ~ " Record" %}
-{% set arial_label = "editRecordModalLabel" %}
+{% set arial_label = "editStudentModalLabel" %}

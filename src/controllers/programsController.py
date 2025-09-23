@@ -17,7 +17,12 @@ def data() -> Response:
     search_value = request.form.get("search[value]", "")
     order_column_index = request.form.get("order[0][column]")
     order_dir = request.form.get("order[0][dir]", "asc")
-    column_name = request.form.get(f"columns[{order_column_index}][data]").replace(" ", "")
+    column_name = request.form.get(f"columns[{order_column_index}][data]")
+
+    if column_name:
+        column_name = column_name.replace(" ", "")
+    else:
+        column_name = ProgramsModel.get_primary_key()
 
     records = ProgramsModel.get_filtered_records(
         search_value=search_value,
@@ -28,8 +33,6 @@ def data() -> Response:
     )
 
     total_filtered_records = ProgramsModel.get_total_filtered_records(search_value=search_value)
-
-    reqPKeys = CollegesModel.get_aLL_pkeys()
 
     for r in records:
         r["actions"] = render_template("partials/_row_buttons.html", key=r["Code"])
@@ -45,9 +48,9 @@ def data() -> Response:
 
 @programs_bp.route("/programs/add", methods=["POST"])
 def add_program() -> Response:
-    code = request.form.get("recordProgramPrimaryCode")
-    name = request.form.get("recordProgramName")
-    college_code = request.form.get("recordForeignCollegeCode")
+    code = request.form.get("addProgramPrimaryCode")
+    name = request.form.get("addProgramName")
+    college_code = request.form.get("addForeignCollegeCode")
 
     code_dup = ProgramsModel.record_exists("Code", code)
     name_dup =  ProgramsModel.record_exists("Name", name)
@@ -74,13 +77,13 @@ def delete_program(code : str) -> Response:
 
     return jsonify({"status": "success", "message": f"Program '{code}' deleted successfully!"})
 
-@programs_bp.route("/programs/<string:code>/edit-form")
-def edit_form(code):
-    return render_template(
-        "programs/partials/_form.html",
-        form_id="editRecordForm",
-        form_action=url_for("programs.update_program", code=code)
-    )
+@programs_bp.route("/programs/get_edit_info/<string:code>")
+def get_edit_info(code) -> Response:
+    try:
+        recordData = ProgramsModel.get_record(code)
+    except Exception as e:
+        return jsonify(status="error", message="Error getting program data for editing.")
+    return jsonify(status="success", data=recordData)
 
 @programs_bp.route("/programs/check_duplicates")
 def check_duplicates():

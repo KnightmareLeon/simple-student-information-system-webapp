@@ -1,11 +1,3 @@
-const sidebar = document.querySelector('.sidebar');
-const toggleHeader = document.getElementById('sidebarToggle');
-
-toggleHeader.addEventListener('click', () => {
-    sidebar.classList.toggle('minimized');
-    document.cookie = "sidebar=" + (sidebar.classList.contains('minimized') ? "minimized" : "expanded") + ";path=/";
-});
-
 function showToast(message, type = "success", position = "top-0 start-50 translate-middle-x") {
     const $toast = $('#mainToast');
     const $container = $('#toastContainer');
@@ -61,9 +53,9 @@ function setupDeleteHandler(tableSelector, entity) {
     });
 }
 
-$('#recordProgramPrimaryCode, #recordProgramName').on('blur input', function() {
-    let code = $('#recordProgramPrimaryCode').val().trim();
-    let name = $('#recordProgramName').val().trim();
+$('#addProgramPrimaryCode, #addProgramName').on('blur input', function() {
+    let code = $('#addProgramPrimaryCode').val().trim();
+    let name = $('#addProgramName').val().trim();
     if (!code && !name) return;
 
     $.get('/programs/check_duplicates', { code: code, name: name }, function(resp) {
@@ -79,9 +71,9 @@ $('#recordProgramPrimaryCode, #recordProgramName').on('blur input', function() {
     });
 });
 
-$('#recordCollegePrimaryCode, #recordCollegeName').on('blur input', function() {
-    let code = $('#recordCollegePrimaryCode').val().trim();
-    let name = $('#recordCollegeName').val().trim();
+$('#addCollegePrimaryCode, #addCollegeName').on('blur input', function() {
+    let code = $('#addCollegePrimaryCode').val().trim();
+    let name = $('#addCollegeName').val().trim();
     if (!code && !name) return;
 
     $.get('/colleges/check_duplicates', { code: code, name: name }, function(resp) {
@@ -97,6 +89,65 @@ $('#recordCollegePrimaryCode, #recordCollegeName').on('blur input', function() {
     });
 });
 
+$('#CollegeTable').on('click', '.edit-btn', function () {
+    const recordId = $(this).data('id');
+
+    $.get(`/colleges/get_edit_info/${recordId}`, function (resp) {
+        if (resp.status === "success") {
+            $('#editCollegePrimaryCode').val(resp.data.Code);
+            $('#editCollegeName').val(resp.data.Name);
+
+            $('#editCollegeModal').modal('show');
+        } else {
+            showToast(resp.message, "error");
+        }
+    });
+});
+
+$('#ProgramTable').on('click', '.edit-btn', function () {
+    const recordId = $(this).data('id');
+
+    $.get(`/programs/get_edit_info/${recordId}`, function (resp) {
+        if (resp.status === "success") {
+            $('#editProgramPrimaryCode').val(resp.data.Code);
+            $('#editProgramName').val(resp.data.Name);
+            $('select[name=editForeignCollegeCode]').selectpicker('val', resp.data.CollegeCode);
+            $('select[name=editForeignCollegeCode]').selectpicker('render');
+            $('#editProgramModal').modal('show');
+        } else {
+            showToast(resp.message, "error");
+        }
+    });
+});
+
+$('#StudentTable').on('click', '.edit-btn', function () {
+    const recordId = $(this).data('id');
+
+    $.get(`/students/get_edit_info/${recordId}`, function (resp) {
+        if (resp.status === "success") {
+            $('#editID').val(resp.data.ID);
+            $('#editFirstName').val(resp.data.FirstName);
+            $('#editLastName').val(resp.data.LastName);
+            $('input[name=editGender][value="' + resp.data.Gender + '"]').prop('checked', true);
+            $('input[name=editYearLevel][value="' + resp.data.YearLevel + '"]').prop('checked', true);
+            $('#editYearLevel').val(resp.data.YearLevel);
+            $('select[name=editForeignProgramCode]').selectpicker('val', resp.data.ProgramCode);
+            $('select[name=editForeignProgramCode]').selectpicker('render');
+            $('#editStudentModal').modal('show');
+        } else {
+            showToast(resp.message, "error");
+        }
+    });
+});
+
+const sidebar = document.querySelector('.sidebar');
+const toggleHeader = document.getElementById('sidebarToggle');
+
+toggleHeader.addEventListener('click', () => {
+    sidebar.classList.toggle('minimized');
+    document.cookie = "sidebar=" + (sidebar.classList.contains('minimized') ? "minimized" : "expanded") + ";path=/";
+});
+
 let collegeTable = $('#CollegeTable').DataTable({
     processing: true, 
     serverSide: true, 
@@ -108,12 +159,7 @@ let collegeTable = $('#CollegeTable').DataTable({
         { data: "Code" },
         { data: "Name" },
         { data: "actions", orderable: false, searchable: false }
-    ],
-    rowCallback: function(row, data) {
-    if (!$('#editRecordModal' + data.id).length) {
-        $('body').append(data.modal);
-    }
-}
+    ]
 });
 
 let programTable = $('#ProgramTable').DataTable({
@@ -128,12 +174,7 @@ let programTable = $('#ProgramTable').DataTable({
         { data: "Name" },
         { data: "CollegeCode" },
         { data: "actions", orderable: false, searchable: false }
-    ],
-    rowCallback: function(row, data) {
-    if (!$('#editRecordModal' + data.id).length) {
-        $('body').append(data.modal);
-    }
-}
+    ]
 });
 
 let studentTable = $('#StudentTable').DataTable({
@@ -151,12 +192,7 @@ let studentTable = $('#StudentTable').DataTable({
         { data: "YearLevel" },
         { data: "ProgramCode" },
         { data: "actions", orderable: false, searchable: false }
-    ],
-    rowCallback: function(row, data) {
-    if (!$('#editRecordModal' + data.id).length) {
-        $('body').append(data.modal);
-    }
-}
+    ]
 });
 
 setupTableModal('#addCollegeForm', '#addCollegeModal', '#addCollegeFormAlert', '#CollegeTable');
@@ -166,28 +202,6 @@ setupTableModal('#addStudentForm', '#addStudentModal', '#addStudentFormAlert', '
 setupDeleteHandler('#CollegeTable','colleges');
 setupDeleteHandler('#ProgramTable','programs');
 setupDeleteHandler('#StudentTable','students');
-
-$('#ProgramTable').on('click', '.edit-btn', function () {
-    let id = $(this).data('id');
-    $.ajax({
-        url: `/programs/${id}/edit-form`,
-        type: 'GET',
-        success: function (html) {
-            $('#editRecordModal .modal-content').html(`
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Program</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">${html}</div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" form="editRecordForm" class="btn btn-primary">Save</button>
-                </div>
-            `);
-            $('#editRecordModal').modal('show');
-        }
-    });
-});
 
 const ctx = document.getElementById('dashboardStudentChart').getContext('2d');
 const myBarChart = new Chart(ctx, {

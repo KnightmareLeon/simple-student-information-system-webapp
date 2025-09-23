@@ -15,7 +15,12 @@ def data() -> Response:
     search_value = request.form.get("search[value]", "")
     order_column_index = request.form.get("order[0][column]")
     order_dir = request.form.get("order[0][dir]", "asc")
-    column_name = request.form.get(f"columns[{order_column_index}][data]").replace(" ", "")
+    column_name = request.form.get(f"columns[{order_column_index}][data]")
+
+    if column_name:
+        column_name = column_name.replace(" ", "")
+    else:
+        column_name = CollegesModel.get_primary_key()
 
     records = CollegesModel.get_filtered_records(
         search_value=search_value,
@@ -40,8 +45,8 @@ def data() -> Response:
 
 @colleges_bp.route("/colleges/add", methods=["POST"])
 def add_college() -> Response:
-    code = request.form.get("recordCollegePrimaryCode")
-    name = request.form.get("recordCollegeName")
+    code = request.form.get("addCollegePrimaryCode")
+    name = request.form.get("addCollegeName")
 
     code_dup = CollegesModel.record_exists("Code", code)
     name_dup =  CollegesModel.record_exists("Name", name)
@@ -65,6 +70,14 @@ def delete_college(code : str) -> Response:
         return jsonify({"status": "error", "message": "College record deletion failed."}), 404
 
     return jsonify({"status": "success", "message": f"College '{code}' deleted successfully!"})
+
+@colleges_bp.route("/colleges/get_edit_info/<string:code>")
+def get_edit_info(code) -> Response:
+    try:
+        recordData = CollegesModel.get_record(code)
+    except Exception as e:
+        return jsonify(status="error", message="Error getting college data for editing.")
+    return jsonify(status="success", data=recordData)
 
 @colleges_bp.route("/colleges/check_duplicates")
 def check_duplicates() -> Response:

@@ -1,9 +1,13 @@
 {% extends "partials/_base_record_modal.html" %}
 
 {% block modal_body %}
-    {% include "colleges/partials/_form.html" %}
+    {% with form_action = "edit" %}
+        {% include "colleges/partials/_form.html" %}
+    {% endwith %}
 {% endblock %}
 
-{% set modal_id = "editRecordModal" ~ key %}
+{% set modal_id = "editCollegeModal" ~ key %}
+{% set modal_label = "editCollegeModalLabel" %}
+{% set form_type = "editCollegeForm" %}
 {% set title = "Edit " ~ header_var ~ " Record" %}
-{% set arial_label = "editRecordModalLabel" %}
+{% set arial_label = "editCollegeModalLabel" %}

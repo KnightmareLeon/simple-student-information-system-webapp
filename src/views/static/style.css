@@ -81,6 +81,14 @@ tr button{
 tr:hover button{
     visibility: visible;
 }
+
+.table th:first-child,
+.table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
 .dashboard-header .card {
     transition: all 0.3s ease;
 }

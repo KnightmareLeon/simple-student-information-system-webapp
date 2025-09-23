@@ -2,7 +2,7 @@
 
 {% block modal_body %}
     <div id="addProgramFormAlert" class="alert d-none" role="alert"></div>
-    {% with form_id="addProgramForm", action_url=url_for('programs.add_program'), pKeys=pKeys %}
+    {% with form_id="addProgramForm", action_url=url_for('programs.add_program'), form_action = "add", pKeys=pKeys %}
         {% include "programs/partials/_form.html" %}
     {% endwith %}
 {% endblock %}

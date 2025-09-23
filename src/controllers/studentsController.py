@@ -17,7 +17,13 @@ def data() -> Response:
     search_value = request.form.get("search[value]", "")
     order_column_index = request.form.get("order[0][column]")
     order_dir = request.form.get("order[0][dir]", "asc")
-    column_name = request.form.get(f"columns[{order_column_index}][data]").replace(" ", "")
+    column_name = request.form.get(f"columns[{order_column_index}][data]")
+
+
+    if column_name:
+        column_name = column_name.replace(" ", "")
+    else:
+        column_name = StudentsModel.get_primary_key()
 
     records = StudentsModel.get_filtered_records(
         search_value=search_value,
@@ -29,11 +35,8 @@ def data() -> Response:
 
     total_filtered_records = StudentsModel.get_total_filtered_records(search_value=search_value)
 
-    reqPKeys = ProgramsModel.get_aLL_pkeys()
-
     for r in records:
         r["actions"] = render_template("partials/_row_buttons.html", key=r["ID"])
-        r["modal"] = render_template("programs/partials/_update_modal.html", key=r["ID"], pKeys=reqPKeys)
 
     total_records = StudentsModel.get_total()
 
@@ -46,12 +49,12 @@ def data() -> Response:
 
 @students_bp.route("/students/add", methods=["POST"])
 def add_student() -> Response:
-    id = request.form.get("recordID")
-    fname = request.form.get("recordFirstName")
-    lname = request.form.get("recordLastName")
-    gender = request.form.get("gender")
-    yLevel = request.form.get("yearLevel")
-    program_code = request.form.get("recordForeignProgramCode")
+    id = request.form.get("addID")
+    fname = request.form.get("addFirstName")
+    lname = request.form.get("addLastName")
+    gender = request.form.get("addGender")
+    yLevel = request.form.get("addYearLevel")
+    program_code = request.form.get("addForeignProgramCode")
 
     if StudentsModel.record_exists("ID", id):
         return jsonify({"status": "error", "message": f"ID {id} already exists"})
@@ -72,6 +75,14 @@ def delete_college(id : str) -> Response:
         return jsonify({"status": "error", "message": "Student record deletion failed."}), 404
 
     return jsonify({"status": "success", "message": f"Student with ID number '{id}' deleted successfully!"})
+
+@students_bp.route("/students/get_edit_info/<string:code>")
+def get_edit_info(code) -> Response:
+    try:
+        recordData = StudentsModel.get_record(code)
+    except Exception as e:
+        return jsonify(status="error", message="Error getting student data for editing.")
+    return jsonify(status="success", data=recordData)
 
 @students_bp.route("/students/check_duplicates")
 def check_duplicates():

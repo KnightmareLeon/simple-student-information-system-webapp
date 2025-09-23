@@ -2,7 +2,7 @@
 
 {% block modal_body %}
     <div id="addCollegeFormAlert" class="alert d-none" role="alert"></div>
-    {% with form_id="addCollegeForm", action_url=url_for('colleges.add_college')%}
+    {% with form_id="addCollegeForm", action_url=url_for('colleges.add_college'), form_action = "add" %}
         {% include "colleges/partials/_form.html" %}
     {% endwith %}
 {% endblock %}
