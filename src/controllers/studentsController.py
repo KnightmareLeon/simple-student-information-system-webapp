@@ -1,15 +1,19 @@
 from flask import Blueprint, Response, jsonify, render_template, request, url_for
+from flask_login import login_required
+
 from src.models.StudentsModel import StudentsModel
 from src.models.ProgramsModel import ProgramsModel
 
 students_bp = Blueprint("students", __name__)
 
 @students_bp.route("/students")
+@login_required
 def index() -> str:
     reqPKeys = ProgramsModel.get_aLL_pkeys()
     return render_template("students/index.html", active_page = 'students', header_var='Student', reqPKeys=reqPKeys)
 
 @students_bp.route("/students/data", methods=["POST"])
+@login_required
 def data() -> Response:
     draw = int(request.form.get("draw", 1))
     start = int(request.form.get("start", 0))
@@ -48,6 +52,7 @@ def data() -> Response:
     })
 
 @students_bp.route("/students/add", methods=["POST"])
+@login_required
 def add_student() -> Response:
     id = request.form.get("addID")
     fname = request.form.get("addFirstName")
@@ -68,6 +73,7 @@ def add_student() -> Response:
     return jsonify({"status": "success", "message": f"Student '{fname} {lname}' with ID Number {id} added successfully!"})
 
 @students_bp.route("/students/delete/<string:id>", methods=["POST"])
+@login_required
 def delete_college(id : str) -> Response:
     try:
         StudentsModel.delete(id)
@@ -77,6 +83,7 @@ def delete_college(id : str) -> Response:
     return jsonify({"status": "success", "message": f"Student with ID number '{id}' deleted successfully!"})
 
 @students_bp.route("/students/get_edit_info/<string:code>")
+@login_required
 def get_edit_info(code) -> Response:
     try:
         recordData = StudentsModel.get_record(code)
@@ -85,6 +92,7 @@ def get_edit_info(code) -> Response:
     return jsonify(status="success", data=recordData)
 
 @students_bp.route("/students/check_duplicates")
+@login_required
 def check_duplicates():
     id = request.args.get('id', '').strip()
     exists = StudentsModel.record_exists("ID", id)

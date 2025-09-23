@@ -126,7 +126,7 @@ $('#StudentTable').on('click', '.edit-btn', function () {
     $.get(`/students/get_edit_info/${recordId}`, function (resp) {
         if (resp.status === "success") {
             $('#editID').val(resp.data.ID);
-            $('#editFirstName').val(resp.data.FirstName);
+            $('#editFirstName').val(resp.data.FirstName);222222222222222222222222222222
             $('#editLastName').val(resp.data.LastName);
             $('input[name=editGender][value="' + resp.data.Gender + '"]').prop('checked', true);
             $('input[name=editYearLevel][value="' + resp.data.YearLevel + '"]').prop('checked', true);

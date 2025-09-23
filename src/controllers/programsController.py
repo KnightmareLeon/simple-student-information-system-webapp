@@ -1,15 +1,19 @@
-from flask import Blueprint, Response, flash, redirect, render_template, request, jsonify, url_for
+from flask import Blueprint, Response, flash, redirect, render_template, request, jsonify
+from flask_login import login_required
+
 from src.models.ProgramsModel import ProgramsModel
 from src.models.CollegesModel import CollegesModel
 
 programs_bp = Blueprint("programs", __name__)
 
 @programs_bp.route("/programs")
+@login_required
 def index() -> str:
     reqPKeys = CollegesModel.get_aLL_pkeys()
     return render_template("programs/index.html", active_page = 'programs', header_var='Program', reqPKeys=reqPKeys)
 
 @programs_bp.route("/programs/data", methods=["POST"])
+@login_required
 def data() -> Response:
     draw = int(request.form.get("draw", 1))
     start = int(request.form.get("start", 0))
@@ -47,6 +51,7 @@ def data() -> Response:
     })
 
 @programs_bp.route("/programs/add", methods=["POST"])
+@login_required
 def add_program() -> Response:
     code = request.form.get("addProgramPrimaryCode")
     name = request.form.get("addProgramName")
@@ -69,6 +74,7 @@ def add_program() -> Response:
     return jsonify({"status": "success", "message": f"Program '{name}' added successfully!"})
 
 @programs_bp.route("/programs/delete/<string:code>", methods=["POST"])
+@login_required
 def delete_program(code : str) -> Response:
     try:
         ProgramsModel.delete(code)
@@ -78,6 +84,7 @@ def delete_program(code : str) -> Response:
     return jsonify({"status": "success", "message": f"Program '{code}' deleted successfully!"})
 
 @programs_bp.route("/programs/get_edit_info/<string:code>")
+@login_required
 def get_edit_info(code) -> Response:
     try:
         recordData = ProgramsModel.get_record(code)
@@ -86,6 +93,7 @@ def get_edit_info(code) -> Response:
     return jsonify(status="success", data=recordData)
 
 @programs_bp.route("/programs/check_duplicates")
+@login_required
 def check_duplicates():
     code = request.args.get('code', '').strip()
     name = request.args.get('name', '').strip()

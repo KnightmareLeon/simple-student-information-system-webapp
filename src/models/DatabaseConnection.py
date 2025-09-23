@@ -29,7 +29,7 @@ class DatabaseConnection:
         DatabaseConnection.__db.autocommit = True
 
     @staticmethod
-    def get_connection():
+    def get_connection() -> psycopg2.extensions.connection:
         """
         Returns the database connection object. If the connection is not established,
         it initializes the connection first.

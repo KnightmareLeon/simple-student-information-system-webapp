@@ -1,13 +1,17 @@
 from flask import Blueprint, Response, jsonify, render_template, request
+from flask_login import login_required
+
 from src.models.CollegesModel import CollegesModel
 
 colleges_bp = Blueprint("colleges", __name__)
 
 @colleges_bp.route("/colleges")
+@login_required
 def index() -> str:
     return render_template("colleges/index.html", active_page = 'colleges', header_var='College')
 
 @colleges_bp.route("/colleges/data", methods=["POST"])
+@login_required
 def data() -> Response:
     draw = int(request.form.get("draw", 1))
     start = int(request.form.get("start", 0))
@@ -44,6 +48,7 @@ def data() -> Response:
     })
 
 @colleges_bp.route("/colleges/add", methods=["POST"])
+@login_required
 def add_college() -> Response:
     code = request.form.get("addCollegePrimaryCode")
     name = request.form.get("addCollegeName")
@@ -63,6 +68,7 @@ def add_college() -> Response:
     return jsonify({"status": "success", "message": f"College '{code}' added successfully!"})
 
 @colleges_bp.route("/colleges/delete/<string:code>", methods=["POST"])
+@login_required
 def delete_college(code : str) -> Response:
     try:
         CollegesModel.delete(code)
@@ -72,6 +78,7 @@ def delete_college(code : str) -> Response:
     return jsonify({"status": "success", "message": f"College '{code}' deleted successfully!"})
 
 @colleges_bp.route("/colleges/get_edit_info/<string:code>")
+@login_required
 def get_edit_info(code) -> Response:
     try:
         recordData = CollegesModel.get_record(code)
@@ -80,6 +87,7 @@ def get_edit_info(code) -> Response:
     return jsonify(status="success", data=recordData)
 
 @colleges_bp.route("/colleges/check_duplicates")
+@login_required
 def check_duplicates() -> Response:
     code = request.args.get('code', '').strip()
     name = request.args.get('name', '').strip()
