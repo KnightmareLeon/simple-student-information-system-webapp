@@ -69,6 +69,7 @@ def add_program() -> Response:
         new_data = {"Code" : code, "Name" : name, "CollegeCode" : college_code}
         ProgramsModel.create(new_data)
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"status": "error", "message": f"An error occurred when adding program '{code}'."})
 
     return jsonify({"status": "success", "message": f"Program '{name}' added successfully!"})
@@ -79,6 +80,7 @@ def delete_program(code : str) -> Response:
     try:
         ProgramsModel.delete(code)
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"status": "error", "message": "Program record deletion failed."}), 404
 
     return jsonify({"status": "success", "message": f"Program '{code}' deleted successfully!"})
@@ -91,6 +93,33 @@ def get_edit_info(code) -> Response:
     except Exception as e:
         return jsonify(status="error", message="Error getting program data for editing.")
     return jsonify(status="success", data=recordData)
+
+@programs_bp.route("/programs/edit", methods=["POST"])
+@login_required
+def edit_program() -> Response:
+    try:
+        orig_code = request.form.get("editOriginalProgramCode")
+        orig_name = ProgramsModel.get_record(orig_code)["Name"]
+        code = request.form.get("editProgramPrimaryCode")
+        name = request.form.get("editProgramName")
+        college_code = request.form.get("editForeignCollegeCode")
+
+        code_dup = ProgramsModel.record_exists("Code", code)
+        name_dup =  ProgramsModel.record_exists("Name", name)
+        if (code_dup and orig_code != code )  or ( name_dup and orig_name != name):
+            message = []
+            message.append(f"Program code '{code}' already exists! " if code_dup and orig_code != code else "")
+            message.append(f"Program name '{name}' already exists!" if name_dup and orig_name != name else "")
+            return jsonify({"status": "error", "message": " , ".join(message)})
+    
+
+        new_data = {"Code" : code, "Name" : name, "CollegeCode" : college_code}
+        ProgramsModel.update(orig_code, new_data)
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"status": "error", "message": f"An error occurred when updating program '{code}'."})
+
+    return jsonify({"status": "success", "message": f"Program '{name}' updated successfully!"})
 
 @programs_bp.route("/programs/check_duplicates")
 @login_required

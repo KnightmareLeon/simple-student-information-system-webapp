@@ -1,4 +1,5 @@
 <form id="{{ form_id }}" method="POST" action="{{ action_url }}">
+    <input type="hidden" id="{{ form_action }}OriginalProgramCode" name="{{ form_action }}OriginalProgramCode" value="">
     <div class="mb-3">
         <label for="{{form_action}}ProgramPrimaryCode" class="form-label">Code</label>
         <input type="text" class="form-control" id="{{form_action}}ProgramPrimaryCode" name="{{form_action}}ProgramPrimaryCode" required>

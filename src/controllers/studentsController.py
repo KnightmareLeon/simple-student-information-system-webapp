@@ -68,6 +68,7 @@ def add_student() -> Response:
         new_data = {"ID" : id, "FirstName" : fname, "LastName" : lname, "Gender" : gender, "YearLevel" : yLevel, "ProgramCode" : program_code}
         StudentsModel.create(new_data)
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"status": "error", "message": f"An error occurred when adding student '{fname} {lname}' with ID Number {id}."})
 
     return jsonify({"status": "success", "message": f"Student '{fname} {lname}' with ID Number {id} added successfully!"})
@@ -78,6 +79,7 @@ def delete_college(id : str) -> Response:
     try:
         StudentsModel.delete(id)
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"status": "error", "message": "Student record deletion failed."}), 404
 
     return jsonify({"status": "success", "message": f"Student with ID number '{id}' deleted successfully!"})
@@ -88,8 +90,30 @@ def get_edit_info(code) -> Response:
     try:
         recordData = StudentsModel.get_record(code)
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify(status="error", message="Error getting student data for editing.")
     return jsonify(status="success", data=recordData)
+
+@students_bp.route("/students/update", methods=["POST"])
+@login_required
+def edit_student() -> Response:
+    orig_id = request.form.get("editOriginalID")
+    id = request.form.get("editID")
+    fname = request.form.get("editFirstName")
+    lname = request.form.get("editLastName")
+    gender = request.form.get("editGender")
+    yLevel = request.form.get("editYearLevel")
+    program_code = request.form.get("editForeignProgramCode")
+    if StudentsModel.record_exists("ID", id) and id != orig_id:
+        return jsonify({"status": "error", "message": f"ID {id} already exists"})
+
+    try:
+        new_data = {"ID" : id, "FirstName" : fname, "LastName" : lname, "Gender" : gender, "YearLevel" : yLevel, "ProgramCode" : program_code}
+        StudentsModel.update(orig_id, new_data)
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"An error occurred when updating student '{fname} {lname}' with ID Number {id}."})
+
+    return jsonify({"status": "success", "message": f"Student '{fname} {lname}' with ID Number {id} updated successfully!"})
 
 @students_bp.route("/students/check_duplicates")
 @login_required

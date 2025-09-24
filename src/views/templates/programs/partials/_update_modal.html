@@ -1,7 +1,7 @@
 {% extends "partials/_base_record_modal.html" %}
 
 {% block modal_body %}
-    {% with form_action = "edit" %}
+    {% with form_id="editProgramForm", action_url=url_for('programs.edit_program'), form_action = "edit" %}
         {% include "programs/partials/_form.html" %}
     {% endwith %}
 {% endblock %}

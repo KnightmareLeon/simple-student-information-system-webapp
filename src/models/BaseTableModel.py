@@ -276,6 +276,32 @@ class BaseTableModel(ABC):
             cursor.close()
 
     @classmethod
+    def update(cls, orig_key : str, data : dict):
+        """
+        Creates a new record for the table.
+        """
+
+        cls.initialize()
+
+        try:
+            cursor = DatabaseConnection.get_connection().cursor(cursor_factory=DatabaseConnection.real_dict)
+            columns = []
+            values = []
+            for key, value in data.items():
+                columns.append(key)
+                values.append(value)
+            setClause = "SET " + " , ".join([f"\"{col}\" = %s "for col in columns])
+            values.append(orig_key)
+            values = tuple(values)
+            query = f"UPDATE {cls.get_table_name()} {setClause} WHERE \"{cls.get_primary_key()}\" = %s"
+            cursor.execute(query, values)
+        except Exception as e:
+            print(f"Error: {e}")
+            raise e
+        finally:
+            cursor.close()
+
+    @classmethod
     def get_total(cls) -> int:
         """
         Gets the total number of rows from the table.

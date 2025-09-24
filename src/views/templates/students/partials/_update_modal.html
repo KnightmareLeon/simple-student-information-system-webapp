@@ -1,7 +1,7 @@
 {% extends "partials/_base_record_modal.html" %}
 
 {% block modal_body %}
-    {% with form_action = "edit", pKeys=pKeys %}
+    {% with form_id="editStudentForm", action_url=url_for('students.edit_student'), form_action = "edit", pKeys=pKeys %}
         {% include "students/partials/_form.html" %}
     {% endwith %}
 {% endblock %}

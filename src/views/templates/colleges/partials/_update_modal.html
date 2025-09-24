@@ -1,7 +1,7 @@
 {% extends "partials/_base_record_modal.html" %}
 
 {% block modal_body %}
-    {% with form_action = "edit" %}
+    {% with form_id="editCollegeForm", action_url=url_for('colleges.edit_college'), form_action = "edit" %}
         {% include "colleges/partials/_form.html" %}
     {% endwith %}
 {% endblock %}

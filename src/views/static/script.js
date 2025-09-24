@@ -53,6 +53,23 @@ function setupDeleteHandler(tableSelector, entity) {
     });
 }
 
+function setupEditSubmit(formSelector, tableSelector, modalSelector) {
+
+    $(formSelector).submit(function(e) {
+        e.preventDefault();
+
+        $.post($(this).attr('action'), $(this).serialize(), function (resp) {
+            if (resp.status === "success") {
+                $(tableSelector).DataTable().ajax.reload(null, false);
+                $(modalSelector).modal('hide');
+                showToast(resp.message, "success");
+            } else {
+                showToast(resp.message, "error");
+            }
+        });
+    });
+}
+
 $('#addProgramPrimaryCode, #addProgramName').on('blur input', function() {
     let code = $('#addProgramPrimaryCode').val().trim();
     let name = $('#addProgramName').val().trim();
@@ -94,6 +111,7 @@ $('#CollegeTable').on('click', '.edit-btn', function () {
 
     $.get(`/colleges/get_edit_info/${recordId}`, function (resp) {
         if (resp.status === "success") {
+            $('#editOriginalCollegeCode').val(resp.data.Code);
             $('#editCollegePrimaryCode').val(resp.data.Code);
             $('#editCollegeName').val(resp.data.Name);
 
@@ -109,6 +127,7 @@ $('#ProgramTable').on('click', '.edit-btn', function () {
 
     $.get(`/programs/get_edit_info/${recordId}`, function (resp) {
         if (resp.status === "success") {
+            $('#editOriginalProgramCode').val(resp.data.Code);
             $('#editProgramPrimaryCode').val(resp.data.Code);
             $('#editProgramName').val(resp.data.Name);
             $('select[name=editForeignCollegeCode]').selectpicker('val', resp.data.CollegeCode);
@@ -125,8 +144,9 @@ $('#StudentTable').on('click', '.edit-btn', function () {
 
     $.get(`/students/get_edit_info/${recordId}`, function (resp) {
         if (resp.status === "success") {
+            $('#editOriginalID').val(resp.data.ID);
             $('#editID').val(resp.data.ID);
-            $('#editFirstName').val(resp.data.FirstName);222222222222222222222222222222
+            $('#editFirstName').val(resp.data.FirstName);
             $('#editLastName').val(resp.data.LastName);
             $('input[name=editGender][value="' + resp.data.Gender + '"]').prop('checked', true);
             $('input[name=editYearLevel][value="' + resp.data.YearLevel + '"]').prop('checked', true);
@@ -147,6 +167,8 @@ toggleHeader.addEventListener('click', () => {
     sidebar.classList.toggle('minimized');
     document.cookie = "sidebar=" + (sidebar.classList.contains('minimized') ? "minimized" : "expanded") + ";path=/";
 });
+
+DataTable.type('num', 'className', '');
 
 let collegeTable = $('#CollegeTable').DataTable({
     processing: true, 
@@ -202,6 +224,10 @@ setupTableModal('#addStudentForm', '#addStudentModal', '#addStudentFormAlert', '
 setupDeleteHandler('#CollegeTable','colleges');
 setupDeleteHandler('#ProgramTable','programs');
 setupDeleteHandler('#StudentTable','students');
+
+setupEditSubmit('#editCollegeForm', '#CollegeTable', '#editCollegeModal');
+setupEditSubmit('#editProgramForm', '#ProgramTable', '#editProgramModal');
+setupEditSubmit('#editStudentForm', '#StudentTable', '#editStudentModal');
 
 const ctx = document.getElementById('dashboardStudentChart').getContext('2d');
 const myBarChart = new Chart(ctx, {

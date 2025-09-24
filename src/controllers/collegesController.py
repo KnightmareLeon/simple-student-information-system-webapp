@@ -64,6 +64,7 @@ def add_college() -> Response:
         new_data = {"Code" : code, "Name" : name}
         CollegesModel.create(new_data)
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"status": "error", "message": f"An error occurred adding College {code}."})
     return jsonify({"status": "success", "message": f"College '{code}' added successfully!"})
 
@@ -73,6 +74,7 @@ def delete_college(code : str) -> Response:
     try:
         CollegesModel.delete(code)
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"status": "error", "message": "College record deletion failed."}), 404
 
     return jsonify({"status": "success", "message": f"College '{code}' deleted successfully!"})
@@ -83,8 +85,33 @@ def get_edit_info(code) -> Response:
     try:
         recordData = CollegesModel.get_record(code)
     except Exception as e:
+        print(f"Error: {e}")
         return jsonify(status="error", message="Error getting college data for editing.")
     return jsonify(status="success", data=recordData)
+
+@colleges_bp.route("/colleges/update", methods=["POST"])
+@login_required
+def edit_college() -> Response:
+    try:
+        orig_code = request.form.get("editOriginalCollegeCode")
+        orig_name = CollegesModel.get_record(orig_code)["Name"]
+        code = request.form.get("editCollegePrimaryCode")
+        name = request.form.get("editCollegeName")
+
+        code_dup = CollegesModel.record_exists("Code", code)
+        name_dup =  CollegesModel.record_exists("Name", name)
+        if (code_dup and orig_code != code ) or ( name_dup and orig_name != name):
+            message = []
+            message.append(f"College code '{code}' already exists! " if code_dup and orig_code != code else "")
+            message.append(f"College name '{name}' already exists!" if name_dup  and orig_name != name else "")
+            return jsonify({"status": "error", "message": " , ".join(message)})
+
+        new_data = {"Code" : code, "Name" : name}
+        CollegesModel.update(orig_code, new_data)
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"status": "error", "message": f"An error occurred updating college."})
+    return jsonify({"status": "success", "message": f"College '{code}' updated successfully!"})
 
 @colleges_bp.route("/colleges/check_duplicates")
 @login_required

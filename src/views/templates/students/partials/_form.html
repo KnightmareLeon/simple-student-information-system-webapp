@@ -1,6 +1,7 @@
 <form id="{{ form_id }}" method="POST" action="{{ action_url }}">
+    <input type="hidden" id="{{ form_action }}OriginalID" name="{{ form_action }}OriginalID" value="">
     <div class="mb-3">
-        <label for="{{form_action}}ID" class="form-label">ID Number</label>
+        <label for="{{ form_action }}ID" class="form-label">ID Number</label>
         <input type="text" class="form-control" id="{{form_action}}ID" name="{{form_action}}ID" required>
     </div>
 
