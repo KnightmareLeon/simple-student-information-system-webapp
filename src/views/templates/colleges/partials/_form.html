@@ -2,10 +2,25 @@
     <input type="hidden" id="{{ form_action }}OriginalCollegeCode" name="{{ form_action }}OriginalCollegeCode" value="">
     <div class="mb-3">
         <label for="{{form_action}}CollegePrimaryCode" class="form-label">Code</label>
-        <input type="text" class="form-control" id="{{form_action}}CollegePrimaryCode" name="{{form_action}}CollegePrimaryCode" required>
+        <input
+            type="text"
+            class="form-control text-uppercase"
+            id="{{form_action}}CollegePrimaryCode"
+            name="{{form_action}}CollegePrimaryCode"
+            minlength="1"
+            maxlength="5"
+            pattern="^[A-Z]+$"
+            required>
     </div>
     <div class="mb-3">
         <label for="{{form_action}}CollegeName" class="form-label">Name</label>
-        <input type="text" class="form-control" id="{{form_action}}CollegeName" name="{{form_action}}CollegeName" required>
+        <input
+            type="text"
+            class="form-control"
+            id="{{form_action}}CollegeName"
+            name="{{form_action}}CollegeName"
+            minlength="1"
+            maxlength="100"
+            required>
     </div>
 </form>

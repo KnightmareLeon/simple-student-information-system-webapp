@@ -2,11 +2,26 @@
     <input type="hidden" id="{{ form_action }}OriginalProgramCode" name="{{ form_action }}OriginalProgramCode" value="">
     <div class="mb-3">
         <label for="{{form_action}}ProgramPrimaryCode" class="form-label">Code</label>
-        <input type="text" class="form-control" id="{{form_action}}ProgramPrimaryCode" name="{{form_action}}ProgramPrimaryCode" required>
+        <input 
+            type="text"
+            class="form-control text-uppercase"
+            id="{{form_action}}ProgramPrimaryCode"
+            name="{{form_action}}ProgramPrimaryCode"
+            minlength="1"
+            maxlength="20"
+            pattern="^[A-Z]+$"
+            required>
     </div>
     <div class="mb-3">
         <label for="{{form_action}}ProgramName" class="form-label">Name</label>
-        <input type="text" class="form-control" id="{{form_action}}ProgramName" name="{{form_action}}ProgramName" required>
+        <input
+            type="text"
+            class="form-control"
+            id="{{form_action}}ProgramName"
+            name="{{form_action}}ProgramName"
+            minlength="1"
+            maxlength="100"
+            required>
     </div>
     <div class="mb-3">
         <label for="{{form_action}}ForeignyCollegeCode" class="form-label">College Code</label>
