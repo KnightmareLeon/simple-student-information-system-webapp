@@ -106,6 +106,20 @@ $('#addCollegePrimaryCode, #addCollegeName').on('blur input', function() {
     });
 });
 
+$('#addID').on('blur input', function() {
+    let id = $('#addID').val().trim();
+    if (!id) return;
+
+    $.get('/students/check_duplicates', { id : id }, function(resp) {
+        const $alert = $('#addStudentFormAlert');
+        if (resp.exists) {
+            $alert.removeClass('d-none alert-success').addClass('alert-danger').text(`ID number ${id} already exists.`);
+        } else {
+            $alert.addClass('d-none');
+        }
+    });
+});
+
 $('#CollegeTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');
 
