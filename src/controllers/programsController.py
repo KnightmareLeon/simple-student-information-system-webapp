@@ -3,6 +3,7 @@ from flask_login import login_required
 
 from src.models.ProgramsModel import ProgramsModel
 from src.models.CollegesModel import CollegesModel
+from src.models.StudentsModel import StudentsModel
 
 programs_bp = Blueprint("programs", __name__)
 
@@ -123,7 +124,7 @@ def edit_program() -> Response:
 
 @programs_bp.route("/programs/check_duplicates")
 @login_required
-def check_duplicates():
+def check_duplicates() -> Response:
     code = request.args.get('code', '').strip()
     name = request.args.get('name', '').strip()
     exists_code = ProgramsModel.record_exists("Code", code)
@@ -132,3 +133,17 @@ def check_duplicates():
             'exists_code': exists_code,
             'exists_name': exists_name
         })
+
+@programs_bp.route("/programs/info/<string:code>", methods=["GET"])
+@login_required
+def get_program_info(code : str):
+    try:
+        program_data = ProgramsModel.get_record(code)
+        college_name = CollegesModel.get_record(program_data["CollegeCode"])["Name"]
+        total_stds = StudentsModel.total_students_by_program(code)
+        program_data["CollegeName"] = college_name
+        program_data["TotalStudents"] = total_stds
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"status" : "error", "message" : f"An error occured when getting the program's data/information"}), 404
+    return jsonify({"status" : "success", "data": program_data})

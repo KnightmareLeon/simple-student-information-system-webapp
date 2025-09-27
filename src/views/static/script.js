@@ -153,6 +153,23 @@ $('#ProgramTable').on('click', '.edit-btn', function () {
     });
 });
 
+$('#ProgramTable').on('click', '.info-btn', function () {
+    const programCode = $(this).data('id')
+    $.get(`/programs/info/${programCode}`, function(resp){
+        if (resp.status === "success") {
+            $('#infoProgramCode').text(programCode);
+            $('#infoProgramName').text(resp.data.Name);
+            $('#infoForeignCollegeCode').text(resp.data.CollegeCode);
+            $('#infoForeignCollegeName').text(resp.data.CollegeName);
+            $('#infoProgramStudentCount').text(resp.data.TotalStudents);
+            $('#infoProgramModal').modal('show');
+        } else {
+            showToast(resp.message, "error");
+        }
+    });
+    
+});
+
 $('#StudentTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');
 

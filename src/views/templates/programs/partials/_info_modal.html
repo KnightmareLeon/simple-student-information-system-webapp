@@ -1,0 +1,15 @@
+{% extends "partials/_base_info_modal.html" %}
+
+{% block modal_body %}
+    <div class="mb-3">Program Code: <span id="infoProgramCode"></span></div>
+    <div class="mb-3">Program Name: <span id="infoProgramName"></span></div>
+    <div class="mb-3">College Code: <span id="infoForeignCollegeCode"></span></div>
+    <div class="mb-3">College Name: <span id="infoForeignCollegeName"></span></div>
+    <div class="mb-3">Total Number of Students: <span id="infoProgramStudentCount"></span></div>
+    </div>
+{% endblock %}
+
+{% set modal_id = "infoProgramModal" %}
+{% set modal_label = "infoProgramModalLabel" %}
+{% set title = header_var ~ " Record" %}
+{% set arial_label = "infoProgramModalLabel" %}
