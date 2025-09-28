@@ -16,14 +16,14 @@ This version, the webapp, will be made with Flask, Bootstrap and PostgreSQL.
   Source: https://dashboardicons.com/icons/fileflows  
   License: https://www.apache.org/licenses/LICENSE-2.0
 
-- **Education Book Learn School Library (modified)**
+- **Education Book Learn School Library (modified)**   
   Original by **wishforge.games**, from the **Education And Learning Line Icons** collection  
   Licensed under the **CC BY 4.0**  
   Source: https://www.svgrepo.com/svg/383221/education-book-learn-school-library     
   License: https://creativecommons.org/licenses/by/4.0/
 
 
-- **Education Book Add (modified)**
+- **Education Book Add (modified)**   
   Original by **wishforge.games**, from the **Education And Learning Line Icons** collection  
   Licensed under the **CC BY 4.0**  
   Source: https://www.svgrepo.com/svg/383218/education-book-add     

@@ -20,10 +20,7 @@ def login():
 
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
-        print(form.username.data)
-        print(form.password.data)
         user = User.get_by_username(form.username.data)
-        print(user)
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             flash('Logged in successfully!', 'success')
