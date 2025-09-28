@@ -191,6 +191,27 @@ $('#StudentTable').on('click', '.edit-btn', function () {
     });
 });
 
+$('#StudentTable').on('click', '.info-btn', function () {
+    const studentID = $(this).data('id')
+    $.get(`/students/info/${studentID}`, function(resp){
+        if (resp.status === "success") {
+            $('#infoID').text(resp.data.ID);
+            $('#infoFirstName').text(resp.data.FirstName);
+            $('#infoLastName').text(resp.data.LastName);
+            $('#infoGender').text(resp.data.Gender);
+            $('#infoYearLevel').text(resp.data.YearLevel);
+            $('#infoForeignProgramCode').text(resp.data.ProgramCode);
+            $('#infoForeignProgramName').text(resp.data.ProgramName);
+            $('#infoStudentForeignCollegeCode').text(resp.data.CollegeCode);
+            $('#infoStudentForeignCollegeName').text(resp.data.CollegeName);
+            $('#infoStudentModal').modal('show');
+        } else {
+            showToast(resp.message, "error");
+        }
+    });
+    
+});
+
 const sidebar = document.querySelector('.sidebar');
 const toggleHeader = document.getElementById('sidebarToggle');
 

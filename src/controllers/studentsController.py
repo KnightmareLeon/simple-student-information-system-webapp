@@ -1,6 +1,7 @@
 from flask import Blueprint, Response, jsonify, render_template, request, url_for
 from flask_login import login_required
 
+from src.models.CollegesModel import CollegesModel
 from src.models.StudentsModel import StudentsModel
 from src.models.ProgramsModel import ProgramsModel
 
@@ -121,3 +122,18 @@ def check_duplicates():
     id = request.args.get('id', '').strip()
     exists = StudentsModel.record_exists("ID", id)
     return  jsonify({'exists' : exists})
+
+@students_bp.route("/students/info/<string:id>", methods=["GET"])
+@login_required
+def get_students_info(id : str):
+    try:
+        student_data = StudentsModel.get_record(id)
+        program_data = ProgramsModel.get_record(student_data["ProgramCode"])
+        college_name = CollegesModel.get_record(program_data["CollegeCode"])["Name"]
+        student_data["ProgramName"] = program_data["Name"]
+        student_data["CollegeCode"] = program_data["CollegeCode"]
+        student_data["CollegeName"] = college_name
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"status" : "error", "message" : f"An error occured when getting the students's data/information"}), 404
+    return jsonify({"status" : "success", "data": student_data})
