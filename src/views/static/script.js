@@ -136,6 +136,21 @@ $('#CollegeTable').on('click', '.edit-btn', function () {
     });
 });
 
+$('#CollegeTable').on('click', '.info-btn', function () {
+    const collegeCode = $(this).data('id')
+    $.get(`/colleges/info/${collegeCode}`, function(resp){
+        if (resp.status === "success") {
+            $('#infoCollegeCode').text(collegeCode);
+            $('#infoCollegeName').text(resp.data.Name);
+            $('#infoCollegeTotalPrograms').text(resp.data.TotalPrograms);
+            $('#infoCollegeTotalStudents').text(resp.data.TotalStudents);
+            $('#infoCollegeModal').modal('show');
+        } else {
+            showToast(resp.message, "error");
+        }
+    });
+});
+
 $('#ProgramTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');
 

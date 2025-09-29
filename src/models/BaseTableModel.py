@@ -193,7 +193,7 @@ class BaseTableModel(ABC):
 
         try:
             cursor = DatabaseConnection.get_connection().cursor(cursor_factory=DatabaseConnection.real_dict)
-            sql = f"SELECT \"{cls.get_primary_key()}\" FROM {cls.get_table_name()}"
+            sql = f"SELECT \"{cls.get_primary_key()}\" FROM {cls.get_table_name()} ORDER BY \"{cls.get_primary_key()}\" ASC"
             cursor.execute(sql)
 
             result = cursor.fetchall()

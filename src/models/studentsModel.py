@@ -19,7 +19,6 @@ class StudentsModel(BaseTableModel):
         try:
             cursor = DatabaseConnection.get_connection().cursor()
             query = f"SELECT \"ProgramCode\", COUNT(\"ProgramCode\") FROM {cls.get_table_name()} WHERE \"ProgramCode\" = %s GROUP BY \"ProgramCode\""
-            print(program_code)
             cursor.execute(query, (program_code,))
             
             result = cursor.fetchone()
