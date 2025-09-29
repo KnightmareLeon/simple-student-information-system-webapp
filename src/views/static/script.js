@@ -296,6 +296,10 @@ setupEditSubmit('#editCollegeForm', '#CollegeTable', '#editCollegeModal');
 setupEditSubmit('#editProgramForm', '#ProgramTable', '#editProgramModal');
 setupEditSubmit('#editStudentForm', '#StudentTable', '#editStudentModal');
 
+$('.uppercase-field').on('input', function(){
+    $(this).val($(this).val().toUpperCase());
+});
+
 const ctx = document.getElementById('dashboardStudentChart').getContext('2d');
 const myBarChart = new Chart(ctx, {
     type: 'bar',

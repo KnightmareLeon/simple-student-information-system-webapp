@@ -112,6 +112,9 @@ tr:hover button{
     align-items: center;
 }
 
+.uppercase-field{
+    text-transform: uppercase;
+}
 @keyframes fadeInActive {
     from {
         color: var(--bs-nav-link-color); 
