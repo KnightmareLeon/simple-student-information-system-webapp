@@ -23,14 +23,13 @@ def login():
         user = User.get_by_username(form.username.data)
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            flash('Logged in successfully!', 'success')
 
             next_page = request.args.get('next')
             if not next_page or not next_page.startswith('/'):
                 next_page = url_for('user.login')
             return redirect(next_page)
         else:
-            flash('Invalid username or password', 'error')
+            flash('Invalid username or password', 'danger')
 
     return render_template('login.html', form=form, title='Login')
 

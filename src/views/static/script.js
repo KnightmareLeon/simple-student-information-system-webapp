@@ -335,4 +335,3 @@ const myBarChart = new Chart(ctx, {
         }
     }
 });
-
