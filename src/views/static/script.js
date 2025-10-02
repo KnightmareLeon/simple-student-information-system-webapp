@@ -15,11 +15,15 @@ function showToast(message, type = "success", position = "top-0 start-50 transla
     toast.show();
 }
 
-function setupTableModal(formSelector, modalSelector, alertSelector, tableSelector) {
+function setupTableModal(formSelector, modalSelector, alertSelector, tableSelector, selectpickerSelector) {
     $(modalSelector).on('show.bs.modal', function () {
         $(alertSelector).addClass('d-none').removeClass('alert-success alert-danger').text('');
         $(formSelector)[0].reset();
         $(formSelector + ' input, ' + formSelector + ' select').removeClass('is-invalid');
+        if (selectpickerSelector !== 'None') {
+            $(`select[name=${selectpickerSelector}]`).selectpicker('destroy');
+            $(`select[name=${selectpickerSelector}]`).selectpicker();
+        }
     });
 
     $(formSelector).submit(function(e) {
@@ -284,9 +288,9 @@ let studentTable = $('#StudentTable').DataTable({
     ]
 });
 
-setupTableModal('#addCollegeForm', '#addCollegeModal', '#addCollegeFormAlert', '#CollegeTable');
-setupTableModal('#addProgramForm', '#addProgramModal', '#addProgramFormAlert', '#ProgramTable');
-setupTableModal('#addStudentForm', '#addStudentModal', '#addStudentFormAlert', '#StudentTable');
+setupTableModal('#addCollegeForm', '#addCollegeModal', '#addCollegeFormAlert', '#CollegeTable', 'None');
+setupTableModal('#addProgramForm', '#addProgramModal', '#addProgramFormAlert', '#ProgramTable', 'addForeignCollegeCode');
+setupTableModal('#addStudentForm', '#addStudentModal', '#addStudentFormAlert', '#StudentTable', 'addForeignProgramCode');
 
 setupDeleteHandler('#CollegeTable','colleges');
 setupDeleteHandler('#ProgramTable','programs');
