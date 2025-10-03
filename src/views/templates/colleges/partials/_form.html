@@ -1,4 +1,5 @@
 <form id="{{ form_id }}" method="POST" action="{{ action_url }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" id="{{ form_action }}OriginalCollegeCode" name="{{ form_action }}OriginalCollegeCode" value="">
     <div class="mb-3">
         <label for="{{form_action}}CollegePrimaryCode" class="form-label">Code</label>

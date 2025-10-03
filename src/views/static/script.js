@@ -132,7 +132,6 @@ $('#CollegeTable').on('click', '.edit-btn', function () {
             $('#editOriginalCollegeCode').val(resp.data.Code);
             $('#editCollegePrimaryCode').val(resp.data.Code);
             $('#editCollegeName').val(resp.data.Name);
-
             $('#editCollegeModal').modal('show');
         } else {
             showToast(resp.message, "error");
@@ -229,6 +228,10 @@ $('#StudentTable').on('click', '.info-btn', function () {
         }
     });
     
+});
+
+$.ajaxSetup({
+    headers: { "X-CSRFToken": $('meta[name="csrf-token"]').attr('content') }
 });
 
 const sidebar = document.querySelector('.sidebar');
