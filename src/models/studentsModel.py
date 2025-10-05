@@ -32,3 +32,35 @@ class StudentsModel(BaseTableModel):
         finally:
             cursor.close()
         return result
+
+    @classmethod
+    def students_info(
+        cls,
+        id : str
+    ) -> int :
+        """
+        Returns the complete details of a student record along with
+        the program name, college code, and college name that the student
+        is under."""
+        result = None
+
+        try:
+            cursor = DatabaseConnection.get_connection().cursor(cursor_factory=DatabaseConnection.real_dict)
+            query = (
+                "SELECT s.\"ID\", s.\"FirstName\", s.\"LastName\", s.\"Gender\", "
+                "s.\"YearLevel\", s.\"ProgramCode\", p.\"Name\" AS \"ProgramName\", "
+                "c.\"Code\" AS \"CollegeCode\", c.\"Name\" AS \"CollegeName\""
+                "FROM students as s "
+                "LEFT JOIN programs as p ON s.\"ProgramCode\" = p.\"Code\" "
+                "LEFT JOIN colleges as c ON c.\"Code\" = p.\"CollegeCode\" "
+                "WHERE s.\"ID\" = %s" 
+            )
+            cursor.execute(query, (id,))
+            
+            result = cursor.fetchone()
+        except Exception as e:
+            print(f"Error: {e}")
+            raise e
+        finally:
+            cursor.close()
+        return result
