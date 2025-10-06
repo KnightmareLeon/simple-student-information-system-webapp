@@ -41,7 +41,8 @@ class StudentsModel(BaseTableModel):
         """
         Returns the complete details of a student record along with
         the program name, college code, and college name that the student
-        is under."""
+        is under.
+        """
         result = None
 
         try:

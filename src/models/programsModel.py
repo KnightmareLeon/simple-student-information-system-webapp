@@ -32,3 +32,38 @@ class ProgramsModel(BaseTableModel):
         finally:
             cursor.close()
         return result
+    
+    @classmethod
+    def program_info(
+        cls,
+        code : str
+    ) -> int :
+        """
+        Returns the complete details of a program record along with
+        the total students under it and  the college name that the program
+        is under.
+        """
+        result = None
+
+        try:
+            cursor = DatabaseConnection.get_connection().cursor(cursor_factory=DatabaseConnection.real_dict)
+            query = (
+                "SELECT "
+                "p.\"Code\", p.\"Name\", p.\"CollegeCode\", "
+                "c.\"Name\" AS \"CollegeName\", "
+                "COUNT(s.\"ProgramCode\") AS \"TotalStudents\""
+                "FROM programs as p "
+                "LEFT JOIN colleges as c ON p.\"CollegeCode\" = c.\"Code\" "
+                "LEFT JOIN students as s ON p.\"Code\" = s.\"ProgramCode\" "
+                "WHERE p.\"Code\" = %s "
+                "GROUP BY p.\"Code\", p.\"Name\", p.\"CollegeCode\", c.\"Name\"" 
+            )
+            cursor.execute(query, (code,))
+            
+            result = cursor.fetchone()
+        except Exception as e:
+            print(f"Error: {e}")
+            raise e
+        finally:
+            cursor.close()
+        return result

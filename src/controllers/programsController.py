@@ -138,11 +138,7 @@ def check_duplicates() -> Response:
 @login_required
 def get_program_info(code : str):
     try:
-        program_data = ProgramsModel.get_record(code)
-        college_name = CollegesModel.get_record(program_data["CollegeCode"])["Name"]
-        total_stds = StudentsModel.total_students_by_program(code)
-        program_data["CollegeName"] = college_name
-        program_data["TotalStudents"] = total_stds
+        program_data = ProgramsModel.program_info(code)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status" : "error", "message" : f"An error occured when getting the program's data/information"}), 404

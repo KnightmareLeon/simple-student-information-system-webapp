@@ -1,7 +1,6 @@
 from flask import Blueprint, Response, jsonify, render_template, request, url_for
 from flask_login import login_required
 
-from src.models.CollegesModel import CollegesModel
 from src.models.StudentsModel import StudentsModel
 from src.models.ProgramsModel import ProgramsModel
 
