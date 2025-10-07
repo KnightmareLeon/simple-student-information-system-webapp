@@ -37,7 +37,7 @@ class ProgramsModel(BaseTableModel):
     def program_info(
         cls,
         code : str
-    ) -> int :
+    ) -> dict[int | str] :
         """
         Returns the complete details of a program record along with
         the total students under it and  the college name that the program

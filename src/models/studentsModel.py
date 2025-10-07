@@ -37,7 +37,7 @@ class StudentsModel(BaseTableModel):
     def students_info(
         cls,
         id : str
-    ) -> int :
+    ) -> dict[int | str] :
         """
         Returns the complete details of a student record along with
         the program name, college code, and college name that the student
