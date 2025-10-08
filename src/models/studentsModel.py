@@ -7,6 +7,41 @@ class StudentsModel(BaseTableModel):
     _primary = "ID"
 
     @classmethod
+    def _create_table(cls):
+        from dotenv import load_dotenv
+        import os
+        try:
+
+            cursor = DatabaseConnection.get_connection().cursor()
+            load_dotenv()
+            user = os.getenv("USER")
+            query = (
+                "CREATE TABLE IF NOT EXISTS public.students\n"
+                "(\n"
+                "    \"ID\" character(9) COLLATE pg_catalog.\"default\" NOT NULL,\n"
+                "    \"FirstName\" character varying(100) COLLATE pg_catalog.\"default\" NOT NULL,\n"
+                "    \"LastName\" character varying(100) COLLATE pg_catalog.\"default\" NOT NULL,\n"
+                "    \"Gender\" \"Gender\" NOT NULL,\n"
+                "    \"YearLevel\" \"Year Level\" NOT NULL,\n"
+                "    \"ProgramCode\" character varying(20) COLLATE pg_catalog.\"default\",\n"
+                "    CONSTRAINT students_pkey PRIMARY KEY (\"ID\"),\n"
+                "    CONSTRAINT students_fkey FOREIGN KEY (\"ProgramCode\")\n"
+                "        REFERENCES public.programs (\"Code\") MATCH SIMPLE\n"
+                "        ON UPDATE CASCADE\n"
+                "        ON DELETE SET NULL\n"
+                ")\n"
+                "TABLESPACE pg_default;\n"
+                "ALTER TABLE IF EXISTS public.programs\n"
+                f"    OWNER to {user};"
+            )
+            cursor.execute(query)
+        except Exception as e:
+            print(f"Error: {e}")
+            raise e
+        finally:
+            cursor.close()
+
+    @classmethod
     def total_students_by_program(
         cls,
         program_code : str

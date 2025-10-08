@@ -18,13 +18,13 @@ class BaseTableModel(ABC):
             if not cls._initialized:
                 cls._initialized = True
                 cls._create_table()
-                cursor.execute("""
-                    SELECT attname
-                    FROM pg_attribute
-                    WHERE attrelid = %s::regclass
-                    AND attnum > 0
-                    AND NOT attisdropped;
-                """, (cls.get_table_name(),))
+                cursor.execute((
+                    "SELECT attname "
+                    "FROM pg_attribute "
+                    "WHERE attrelid = %s::regclass "
+                    "AND attnum > 0 "
+                    "AND NOT attisdropped"
+                ), (cls.get_table_name(),))
                 cls._columns = [row[0] for row in cursor.fetchall()]
         except Exception as e:
             print(f"Error: {e}")

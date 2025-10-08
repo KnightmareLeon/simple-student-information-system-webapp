@@ -7,6 +7,39 @@ class ProgramsModel(BaseTableModel):
     _primary = "Code"
 
     @classmethod
+    def _create_table(cls):
+        from dotenv import load_dotenv
+        import os
+        try:
+
+            cursor = DatabaseConnection.get_connection().cursor()
+            load_dotenv()
+            user = os.getenv("USER")
+            query = (
+                "CREATE TABLE IF NOT EXISTS public.programs\n"
+                "(\n"
+                "    \"Code\" character varying(20) COLLATE pg_catalog.\"default\" NOT NULL,\n"
+                "    \"Name\" character varying(100) COLLATE pg_catalog.\"default\" NOT NULL,\n"
+                "    \"CollegeCode\" character varying(5) COLLATE pg_catalog.\"default\",\n"
+                "    CONSTRAINT programs_pkey PRIMARY KEY (\"Code\"),\n"
+                "    CONSTRAINT unique_program_name UNIQUE (\"Name\"),\n"
+                "    CONSTRAINT programs_fkey FOREIGN KEY (\"CollegeCode\")\n"
+                "        REFERENCES public.colleges (\"Code\") MATCH SIMPLE\n"
+                "        ON UPDATE CASCADE\n"
+                "        ON DELETE SET NULL\n"
+                ")\n"
+                "TABLESPACE pg_default;\n"
+                "ALTER TABLE IF EXISTS public.programs\n"
+                f"    OWNER to {user};"
+            )
+            cursor.execute(query)
+        except Exception as e:
+            print(f"Error: {e}")
+            raise e
+        finally:
+            cursor.close()
+
+    @classmethod
     def total_programs_by_college(
         cls,
         college_code : str
