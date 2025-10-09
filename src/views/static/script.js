@@ -28,6 +28,8 @@ function setupTableModal(formSelector, modalSelector, alertSelector, tableSelect
 
     $(formSelector).submit(function(e) {
         e.preventDefault();
+        if (!confirm("Are you sure you want to add this record?")) return;
+
         $.post($(this).attr('action'), $(this).serialize(), function(resp) {
             if (resp.status === "success") {
                 $(tableSelector).DataTable().ajax.reload(null, false);
@@ -61,6 +63,8 @@ function setupEditSubmit(formSelector, tableSelector, modalSelector) {
 
     $(formSelector).submit(function(e) {
         e.preventDefault();
+
+        if (!confirm("Are you sure you want to update this record?")) return;
 
         $.post($(this).attr('action'), $(this).serialize(), function (resp) {
             if (resp.status === "success") {
