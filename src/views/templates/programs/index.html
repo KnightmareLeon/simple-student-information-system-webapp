@@ -27,6 +27,12 @@
 <th>College Code</th>
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<!-- Custom College Script-->
+<script src="{{ url_for('static', filename='js/program.js') }}"></script>
+{% endblock %}
+
 {% with pKeys=reqPKeys %}
     {% include "programs/partials/_create_modal.html" %}
     {% include "programs/partials/_update_modal.html" %}

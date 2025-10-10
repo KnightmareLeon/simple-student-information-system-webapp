@@ -22,6 +22,12 @@
 <th>Name</th>
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<!-- Custom College Script-->
+<script src="{{ url_for('static', filename='js/college.js') }}"></script>
+{% endblock %}
+
 {% include "colleges/partials/_create_modal.html" %}
 {% include "colleges/partials/_update_modal.html" %}
 {% include "colleges/partials/_info_modal.html" %}
