@@ -1,4 +1,4 @@
-const ctx = document.getElementById('dashboardStudentChart').getContext('2d');
+const ctx = document.getElementById('dashboardStudentChart')
 const myBarChart = new Chart(ctx, {
     type: 'bar',
     data: {

@@ -10,7 +10,7 @@
             name="{{form_action}}ID"
             minlength="9"
             maxlength="9"
-            pattern="^(?:19(?:6[7-9]|[7-9]\d)|20\d{2}|2100)-(?:0[0-9]{3}|[1-9][0-9]{3})$"
+            pattern="^(?:19(?:6[7-9]|[7-9]\d)|20\d{2}|2100)-(?!0000)\d{4}$"
             required>
     </div>
 
@@ -23,6 +23,7 @@
             name="{{form_action}}FirstName"
             minlength="1"
             maxlength="100"
+            pattern="^[\p{L}]+(?: [\p{L}]+)*$"
             required>
     </div>
 
@@ -35,6 +36,7 @@
             name="{{form_action}}LastName"
             minlength="1"
             maxlength="100"
+            pattern="^[\p{L}]+(?: [\p{L}]+)*$"
             required>
     </div>
 
