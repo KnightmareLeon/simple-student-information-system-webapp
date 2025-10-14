@@ -59,7 +59,8 @@ $('#StudentTable').on('click', '.info-btn', function () {
 
 let studentTable = $('#StudentTable').DataTable({
     processing: true, 
-    serverSide: true, 
+    serverSide: true,
+    scrollX: true,
     ajax: {
         url: "/students/data",
         type: "POST"

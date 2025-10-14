@@ -66,7 +66,7 @@
                 </div>
             </div>
             <!-- Main Content -->
-            <div class="content col col-9 {% if request.cookies.get('sidebar') == 'minimized' %} col-md-10{% endif %} d-flex flex-column vh-100 bg-content text-light overflow-auto">
+            <div class="content col col-9 {% if request.cookies.get('sidebar') == 'minimized' %} col-md-10{% endif %} d-flex flex-column vh-100 bg-content text-light overflow-y-auto">
                 <button class="btn btn-dark d-md-none m-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
                     <i class="bi bi-list"></i> Menu
                 </button>

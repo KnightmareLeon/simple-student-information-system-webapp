@@ -10,7 +10,7 @@
             name="{{form_action}}CollegePrimaryCode"
             minlength="1"
             maxlength="5"
-            pattern="^[A-Z]+$"
+            pattern="^[\p{L}]+(?: [\p{L}]+)*$"
             required>
     </div>
     <div class="mb-3">
@@ -22,6 +22,7 @@
             name="{{form_action}}CollegeName"
             minlength="1"
             maxlength="100"
+            pattern="^[\p{L}]+(?: [\p{L}]+)*$"
             required>
     </div>
 </form>

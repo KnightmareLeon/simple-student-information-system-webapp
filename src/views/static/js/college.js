@@ -52,7 +52,8 @@ $('#CollegeTable').on('click', '.info-btn', function () {
 
 let collegeTable = $('#CollegeTable').DataTable({
     processing: true, 
-    serverSide: true, 
+    serverSide: true,
+    scrollX: true,
     ajax: {
         url: "/colleges/data",
         type: "POST"

@@ -55,7 +55,8 @@ $('#ProgramTable').on('click', '.info-btn', function () {
 
 let programTable = $('#ProgramTable').DataTable({
     processing: true, 
-    serverSide: true, 
+    serverSide: true,
+    scrollX: true,
     ajax: {
         url: "/programs/data",
         type: "POST"
