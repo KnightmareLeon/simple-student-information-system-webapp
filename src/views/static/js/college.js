@@ -5,7 +5,7 @@ $('#addCollegePrimaryCode, #addCollegeName').on('blur input', function() {
     let name = $('#addCollegeName').val().trim();
     if (!code && !name) return;
 
-    $.get('/colleges/check_duplicates', { code: code, name: name }, function(resp) {
+    $.get('/colleges/dup', { code: code, name: name }, function(resp) {
         const $alert = $('#addCollegeFormAlert');
         if (resp.exists_code || resp.exists_name) {
             let msg = [];
@@ -22,11 +22,11 @@ $('#addCollegePrimaryCode, #addCollegeName').on('blur input', function() {
 $('#CollegeTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');
 
-    $.get(`/colleges/get_edit_info/${recordId}`, function (resp) {
+    $.get(`/colleges/${recordId}`, function (resp) {
         if (resp.status === "success") {
-            $('#editOriginalCollegeCode').val(resp.data.Code);
-            $('#editCollegePrimaryCode').val(resp.data.Code);
-            $('#editCollegeName').val(resp.data.Name);
+            $('#editOriginalCollegeCode').val(resp.data.code);
+            $('#editCollegePrimaryCode').val(resp.data.code);
+            $('#editCollegeName').val(resp.data.name);
             $('#editCollegeModal').modal('show');
         } else {
             showToast(resp.message, "error");
@@ -40,9 +40,9 @@ $('#CollegeTable').on('click', '.info-btn', function () {
     $.get(`/colleges/info/${collegeCode}`, function(resp){
         if (resp.status === "success") {
             $('#infoCollegeCode').text(collegeCode);
-            $('#infoCollegeName').text(resp.data.Name);
-            $('#infoCollegeTotalPrograms').text(resp.data.TotalPrograms);
-            $('#infoCollegeTotalStudents').text(resp.data.TotalStudents);
+            $('#infoCollegeName').text(resp.data.name);
+            $('#infoCollegeTotalPrograms').text(resp.data.totalprgs);
+            $('#infoCollegeTotalStudents').text(resp.data.totalstds);
             $('#infoCollegeModal').modal('show');
         } else {
             showToast(resp.message, "error");
@@ -59,8 +59,8 @@ let collegeTable = $('#CollegeTable').DataTable({
         type: "POST"
     },
     columns: [
-        { data: "Code" },
-        { data: "Name" },
+        { data: "code" },
+        { data: "name" },
         { data: "actions", orderable: false, searchable: false }
     ]
 });
@@ -81,5 +81,6 @@ setupDeleteHandler(
 setupEditSubmit(
     '#editCollegeForm',
     '#CollegeTable',
-    '#editCollegeModal'
+    '#editCollegeModal',
+    'colleges'
 );

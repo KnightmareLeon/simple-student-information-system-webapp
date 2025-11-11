@@ -1,49 +1,92 @@
-import psycopg2
-import psycopg2.extras
-from dotenv import load_dotenv
-import os
+from psycopg2 import pool
+from psycopg2.extras import RealDictCursor, RealDictRow
+from psycopg2 import errors
 
-class DatabaseConnection:
+from config import HOST, USER, PASSWORD, DATABASE
+
+from enum import Enum
+
+class FetchMode(Enum):
+    NONE = 'none'
+    ONE = 'one'
+    ALL = 'all'
+
+_connection_pool : pool.SimpleConnectionPool = None
+
+def start_pool():
+    global _connection_pool
+    if _connection_pool is not None:
+        return
+
+    _connection_pool = pool.SimpleConnectionPool(
+        minconn=1,
+        maxconn=10,
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+def get_connection():
+    global _connection_pool
+    if _connection_pool is None:
+        start_pool()
+    return _connection_pool.getconn()
+
+def release_connection(conn):
+    global _connection_pool
+    if _connection_pool:
+        _connection_pool.putconn(conn)
+
+def close_pool():
+    global _connection_pool
+    if _connection_pool:
+        _connection_pool.closeall()
+        _connection_pool = None
+
+def execute_query(
+        query : str,
+        params : tuple | None = None,
+        fetch : FetchMode = FetchMode.NONE,
+        as_dict : bool = False
+    ) -> list[tuple] | list[RealDictRow] | None:
     """
-    A singleton class to manage the database connection.
-    """
+    Helper function for executing database queries. \n
+    The parameters are as follows:
+    - query (required) : str - the query that will be executed
+    - params (default: None): tuple | None  - the parameters that will be formatted into the query
+    - fetch (default: FetchMode.NONE): FetchMode - how the results will be fetched
+    - as_dict (default: False): bool - returns fetch results as a list of dictionaries instead of tuples
     
-    __db = None
-    real_dict = psycopg2.extras.RealDictCursor
+    The function will either return a list of tuples or dictionaries, or none, depending on the
+    provided arguments.
+    """
+    try:
+        db = get_connection()
+        if as_dict:
+            cursor = db.cursor(cursor_factory=RealDictCursor)
+        else:
+            cursor = db.cursor()
 
-    @staticmethod
-    def start_connection():
-        """
-        Initializes the database connection using the credentials stored in the .env file.
-        """
-        if DatabaseConnection.__db is not None:
-            return
-        
-        load_dotenv()
-        DatabaseConnection.__db = psycopg2.connect(
-            host = os.getenv("HOST"),
-            user = os.getenv("USER"),
-            password = os.getenv("PASSWORD"),
-            database = os.getenv("DATABASE")
-        )
-        DatabaseConnection.__db.autocommit = True
+        cursor.execute(query, params or ())
 
-    @staticmethod
-    def get_connection() -> psycopg2.extensions.connection:
-        """
-        Returns the database connection object. If the connection is not established,
-        it initializes the connection first.
-        """
-        if DatabaseConnection.__db is None:
-            DatabaseConnection.start_connection()
-        return DatabaseConnection.__db
+        result = None
+        if fetch == FetchMode.ONE:
+            result = cursor.fetchone()
+        elif fetch == FetchMode.ALL:
+            result = cursor.fetchall()
+        db.commit()
+        return result
 
-    @staticmethod
-    def close_connection():
-        """
-        Closes the database connection if it is open.
-        """
-        if DatabaseConnection.__db is None:
-            return
-        if DatabaseConnection.__db.is_connected():
-            DatabaseConnection.__db.close()
+    except errors.UniqueViolation as e:
+        print(f"Error: {e}")
+        db.rollback()
+        raise e
+    except Exception as e:
+        print(f"Error: {e}")
+        db.rollback()
+        raise e
+
+    finally:
+        cursor.close()
+        release_connection(db)

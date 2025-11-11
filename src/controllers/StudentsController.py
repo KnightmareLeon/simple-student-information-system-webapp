@@ -1,4 +1,4 @@
-from flask import Blueprint, Response, jsonify, render_template, request, url_for
+from flask import Blueprint, Response, jsonify, render_template, request
 from flask_login import login_required
 
 from src.models.StudentsModel import StudentsModel
@@ -9,7 +9,7 @@ students_bp = Blueprint("students", __name__)
 @students_bp.route("/students")
 @login_required
 def index() -> str:
-    reqPKeys = ProgramsModel.get_aLL_pkeys()
+    reqPKeys = ProgramsModel.get_all_pkeys()
     return render_template("students/index.html", active_page = 'students', header_var='Student', reqPKeys=reqPKeys)
 
 @students_bp.route("/students/data", methods=["POST"])
@@ -25,7 +25,7 @@ def data() -> Response:
 
 
     if column_name:
-        column_name = column_name.replace(" ", "")
+        column_name = column_name.replace(" ", "").lower()
     else:
         column_name = StudentsModel.get_primary_key()
 
@@ -40,7 +40,7 @@ def data() -> Response:
     total_filtered_records = StudentsModel.get_total_filtered_records(search_value=search_value)
 
     for r in records:
-        r["actions"] = render_template("partials/_row_buttons.html", key=r["ID"])
+        r["actions"] = render_template("partials/_row_buttons.html", key=r["id"])
 
     total_records = StudentsModel.get_total()
 
@@ -51,7 +51,7 @@ def data() -> Response:
         "data": records
     })
 
-@students_bp.route("/students/add", methods=["POST"])
+@students_bp.route("/students", methods=["POST"])
 @login_required
 def add_student() -> Response:
     id = request.form.get("addID")
@@ -61,40 +61,64 @@ def add_student() -> Response:
     yLevel = request.form.get("addYearLevel")
     program_code = request.form.get("addForeignProgramCode")
 
-    if StudentsModel.record_exists("ID", id):
+    if StudentsModel.record_exists("id", id):
         return jsonify({"status": "error", "message": f"ID {id} already exists"})
 
     try:
-        new_data = {"ID" : id, "FirstName" : fname, "LastName" : lname, "Gender" : gender, "YearLevel" : yLevel, "ProgramCode" : program_code}
+        new_data = {"id" : id,
+                    "firstname" : fname,
+                    "lastname" : lname,
+                    "gender" : gender,
+                    "yearlevel" : yLevel,
+                    "programcode" : program_code
+                    }
         StudentsModel.create(new_data)
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"status": "error", "message": f"An error occurred when adding student '{fname} {lname}' with ID Number {id}."})
+        return jsonify({
+                "status": "error",
+            "message": f"An error occurred when adding student '{fname} {lname}' with ID Number {id}."
+            }), 500
 
-    return jsonify({"status": "success", "message": f"Student '{fname} {lname}' with ID Number {id} added successfully!"})
+    return jsonify({
+            "status": "success",
+            "message": f"Student '{fname} {lname}' with ID Number {id} added successfully!"
+        }), 201
 
-@students_bp.route("/students/delete/<string:id>", methods=["POST"])
+@students_bp.route("/students/<string:id>", methods=["DELETE"])
 @login_required
 def delete_college(id : str) -> Response:
     try:
         StudentsModel.delete(id)
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"status": "error", "message": "Student record deletion failed."}), 404
+        return jsonify({
+                "status": "error",
+                "message": "Student record deletion failed."
+            }), 500
 
-    return jsonify({"status": "success", "message": f"Student with ID number '{id}' deleted successfully!"})
+    return jsonify({
+                "status": "success",
+                "message": f"Student with ID number '{id}' deleted successfully!"
+            }), 200
 
-@students_bp.route("/students/get_edit_info/<string:code>")
+@students_bp.route("/students/<string:code>", methods=["GET"])
 @login_required
 def get_edit_info(code) -> Response:
     try:
-        recordData = StudentsModel.get_record(code)
+        record_data = StudentsModel.get_record(code)
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify(status="error", message="Error getting student data for editing.")
-    return jsonify(status="success", data=recordData)
+        return jsonify({
+                "status" : "error",
+                "message" :"Error getting student data for editing."
+            })
+    return jsonify({
+            "status" : "success", 
+            "data" : record_data
+        })
 
-@students_bp.route("/students/update", methods=["POST"])
+@students_bp.route("/students", methods=["PUT"])
 @login_required
 def edit_student() -> Response:
     orig_id = request.form.get("editOriginalID")
@@ -104,23 +128,38 @@ def edit_student() -> Response:
     gender = request.form.get("editGender")
     yLevel = request.form.get("editYearLevel")
     program_code = request.form.get("editForeignProgramCode")
-    if StudentsModel.record_exists("ID", id) and id != orig_id:
+    if StudentsModel.record_exists("id", id) and id != orig_id:
         return jsonify({"status": "error", "message": f"ID {id} already exists"})
 
     try:
-        new_data = {"ID" : id, "FirstName" : fname, "LastName" : lname, "Gender" : gender, "YearLevel" : yLevel, "ProgramCode" : program_code}
+        new_data = {
+            "id" : id,
+            "firstname" : fname,
+            "lastname" : lname,
+            "gender" : gender,
+            "yearlevel" : yLevel,
+            "programcode" : program_code
+        }
+        
         StudentsModel.update(orig_id, new_data)
     except Exception as e:
-        return jsonify({"status": "error", "message": f"An error occurred when updating student '{fname} {lname}' with ID Number {id}."})
+        return jsonify({
+                "status": "error",
+                "message": f"An error occurred when updating student '{fname} {lname}' with ID Number {id}."
+            })
 
-    return jsonify({"status": "success", "message": f"Student '{fname} {lname}' with ID Number {id} updated successfully!"})
+    return jsonify({
+            "status": "success",
+            "message": f"Student '{fname} {lname}' with ID Number {id} updated successfully!"
+        })
 
-@students_bp.route("/students/check_duplicates")
+@students_bp.route("/students/dup", methods=["GET"])
 @login_required
 def check_duplicates():
     id = request.args.get('id', '').strip()
     exists = StudentsModel.record_exists("ID", id)
-    return  jsonify({'exists' : exists})
+    print(exists)
+    return  jsonify({'exists' : exists}), 200
 
 @students_bp.route("/students/info/<string:id>", methods=["GET"])
 @login_required
@@ -129,5 +168,8 @@ def get_students_info(id : str):
         student_data = StudentsModel.students_info(id)
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"status" : "error", "message" : f"An error occured when getting the students's data/information"}), 404
-    return jsonify({"status" : "success", "data": student_data})
+        return jsonify({
+            "status" : "error",
+            "message" : f"An error occured when getting the students's data/information"
+        }), 404
+    return jsonify({"status" : "success", "data": student_data}), 200

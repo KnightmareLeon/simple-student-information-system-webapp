@@ -31,31 +31,45 @@ function setupDeleteHandler(tableSelector, entity) {
 
         if (!confirm("Are you sure you want to delete this record?")) return;
 
-        $.post(`/${entity}/delete/${recordId}`, function (resp) {
-            if (resp.status === "success") {
-                $(tableSelector).DataTable().ajax.reload(null, false);
-                showToast(resp.message, "success");
-            } else {
-                showToast(resp.message, "error");
+        $.ajax({
+            url: `/${entity}/${recordId}`,
+            type: 'DELETE',
+            success: function(resp) {
+                if (resp.status === "success") {
+                    $(tableSelector).DataTable().ajax.reload(null, false);
+                    showToast(resp.message, "success");
+                } else {
+                    showToast(resp.message, "error");
+                }
+            },
+            error: function(xhr, status, error) {
+                showToast('An error occurred: ' + error, 'error');
             }
         });
     });
 }
 
-function setupEditSubmit(formSelector, tableSelector, modalSelector) {
-
+function setupEditSubmit(formSelector, tableSelector, modalSelector, entity) {
     $(formSelector).submit(function(e) {
         e.preventDefault();
 
         if (!confirm("Are you sure you want to update this record?")) return;
 
-        $.post($(this).attr('action'), $(this).serialize(), function (resp) {
-            if (resp.status === "success") {
-                $(tableSelector).DataTable().ajax.reload(null, false);
-                $(modalSelector).modal('hide');
-                showToast(resp.message, "success");
-            } else {
-                showToast(resp.message, "error");
+        $.ajax({
+            url: `/${entity}`,
+            type: 'PUT',
+            data: $(this).serialize(),
+            success: function(resp) {
+                if (resp.status === "success") {
+                    $(tableSelector).DataTable().ajax.reload(null, false);
+                    $(modalSelector).modal('hide');
+                    showToast(resp.message, "success");
+                } else {
+                    showToast(resp.message, "error");
+                }
+            },
+            error: function(xhr, status, error) {
+                showToast('An error occurred: ' + error, 'error');
             }
         });
     });

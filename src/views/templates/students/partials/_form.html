@@ -84,7 +84,7 @@
         <label for="{{form_action}}ForeignProgramCode" class="form-label">Program Code</label>
         <select class="selectpicker" data-live-search="true" name="{{form_action}}ForeignProgramCode" required>
             {% for pk in pKeys %}
-                <option value="{{ pk.Code }}">{{ pk.Code }}</option>
+                <option value="{{ pk.code }}">{{ pk.code }}</option>
             {% endfor %}
         </select>
     </div>

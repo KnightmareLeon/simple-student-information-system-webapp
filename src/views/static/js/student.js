@@ -3,7 +3,7 @@ $('#addID').on('blur input', function() {
     let id = $('#addID').val().trim();
     if (!id) return;
 
-    $.get('/students/check_duplicates', { id : id }, function(resp) {
+    $.get('/students/dup', { id : id }, function(resp) {
         const $alert = $('#addStudentFormAlert');
         if (resp.exists) {
             $alert.removeClass('d-none alert-success').addClass('alert-danger').text(`ID number ${id} already exists.`);
@@ -17,16 +17,16 @@ $('#addID').on('blur input', function() {
 $('#StudentTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');
 
-    $.get(`/students/get_edit_info/${recordId}`, function (resp) {
+    $.get(`/students/${recordId}`, function (resp) {
         if (resp.status === "success") {
-            $('#editOriginalID').val(resp.data.ID);
-            $('#editID').val(resp.data.ID);
-            $('#editFirstName').val(resp.data.FirstName);
-            $('#editLastName').val(resp.data.LastName);
-            $('input[name=editGender][value="' + resp.data.Gender + '"]').prop('checked', true);
-            $('input[name=editYearLevel][value="' + resp.data.YearLevel + '"]').prop('checked', true);
-            $('#editYearLevel').val(resp.data.YearLevel);
-            $('select[name=editForeignProgramCode]').selectpicker('val', resp.data.ProgramCode);
+            $('#editOriginalID').val(resp.data.id);
+            $('#editID').val(resp.data.id);
+            $('#editFirstName').val(resp.data.firstname);
+            $('#editLastName').val(resp.data.lastname);
+            $('input[name=editGender][value="' + resp.data.gender + '"]').prop('checked', true);
+            $('input[name=editYearLevel][value="' + resp.data.yearlevel + '"]').prop('checked', true);
+            $('#editYearLevel').val(resp.data.yearlevel);
+            $('select[name=editForeignProgramCode]').selectpicker('val', resp.data.programcode);
             $('select[name=editForeignProgramCode]').selectpicker('render');
             $('#editStudentModal').modal('show');
         } else {
@@ -40,15 +40,15 @@ $('#StudentTable').on('click', '.info-btn', function () {
     const studentID = $(this).data('id')
     $.get(`/students/info/${studentID}`, function(resp){
         if (resp.status === "success") {
-            $('#infoID').text(resp.data.ID);
-            $('#infoFirstName').text(resp.data.FirstName);
-            $('#infoLastName').text(resp.data.LastName);
-            $('#infoGender').text(resp.data.Gender);
-            $('#infoYearLevel').text(resp.data.YearLevel);
-            $('#infoForeignProgramCode').text(resp.data.ProgramCode);
-            $('#infoForeignProgramName').text(resp.data.ProgramName);
-            $('#infoStudentForeignCollegeCode').text(resp.data.CollegeCode);
-            $('#infoStudentForeignCollegeName').text(resp.data.CollegeName);
+            $('#infoID').text(resp.data.id);
+            $('#infoFirstName').text(resp.data.firstname);
+            $('#infoLastName').text(resp.data.lastname);
+            $('#infoGender').text(resp.data.gender);
+            $('#infoYearLevel').text(resp.data.yearlevel);
+            $('#infoForeignProgramCode').text(resp.data.programcode);
+            $('#infoForeignProgramName').text(resp.data.programname);
+            $('#infoStudentForeignCollegeCode').text(resp.data.collegecode);
+            $('#infoStudentForeignCollegeName').text(resp.data.collegename);
             $('#infoStudentModal').modal('show');
         } else {
             showToast(resp.message, "error");
@@ -66,12 +66,12 @@ let studentTable = $('#StudentTable').DataTable({
         type: "POST"
     },
     columns: [
-        { data: "ID" },
-        { data: "FirstName" },
-        { data: "LastName" },
-        { data: "Gender" },
-        { data: "YearLevel" },
-        { data: "ProgramCode" },
+        { data: "id" },
+        { data: "firstname" },
+        { data: "lastname" },
+        { data: "gender" },
+        { data: "yearlevel" },
+        { data: "programcode" },
         { data: "actions", orderable: false, searchable: false }
     ]
 });
@@ -92,5 +92,6 @@ setupDeleteHandler(
 setupEditSubmit(
     '#editStudentForm',
     '#StudentTable',
-    '#editStudentModal'
+    '#editStudentModal',
+    'students'
 );

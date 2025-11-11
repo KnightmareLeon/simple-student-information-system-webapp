@@ -4,7 +4,7 @@ $('#addProgramPrimaryCode, #addProgramName').on('blur input', function() {
     let name = $('#addProgramName').val().trim();
     if (!code && !name) return;
 
-    $.get('/programs/check_duplicates', { code: code, name: name }, function(resp) {
+    $.get('/programs/dup', { code: code, name: name }, function(resp) {
         const $alert = $('#addProgramFormAlert');
         if (resp.exists_code || resp.exists_name) {
             let msg = [];
@@ -21,12 +21,12 @@ $('#addProgramPrimaryCode, #addProgramName').on('blur input', function() {
 $('#ProgramTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');
 
-    $.get(`/programs/get_edit_info/${recordId}`, function (resp) {
+    $.get(`/programs/${recordId}`, function (resp) {
         if (resp.status === "success") {
-            $('#editOriginalProgramCode').val(resp.data.Code);
-            $('#editProgramPrimaryCode').val(resp.data.Code);
-            $('#editProgramName').val(resp.data.Name);
-            $('select[name=editForeignCollegeCode]').selectpicker('val', resp.data.CollegeCode);
+            $('#editOriginalProgramCode').val(resp.data.code);
+            $('#editProgramPrimaryCode').val(resp.data.code);
+            $('#editProgramName').val(resp.data.name);
+            $('select[name=editForeignCollegeCode]').selectpicker('val', resp.data.collegecode);
             $('select[name=editForeignCollegeCode]').selectpicker('render');
             $('#editProgramModal').modal('show');
         } else {
@@ -41,10 +41,10 @@ $('#ProgramTable').on('click', '.info-btn', function () {
     $.get(`/programs/info/${programCode}`, function(resp){
         if (resp.status === "success") {
             $('#infoProgramCode').text(programCode);
-            $('#infoProgramName').text(resp.data.Name);
-            $('#infoForeignCollegeCode').text(resp.data.CollegeCode);
-            $('#infoForeignCollegeName').text(resp.data.CollegeName);
-            $('#infoProgramStudentCount').text(resp.data.TotalStudents);
+            $('#infoProgramName').text(resp.data.name);
+            $('#infoForeignCollegeCode').text(resp.data.collegecode);
+            $('#infoForeignCollegeName').text(resp.data.collegename);
+            $('#infoProgramStudentCount').text(resp.data.totalstds);
             $('#infoProgramModal').modal('show');
         } else {
             showToast(resp.message, "error");
@@ -62,9 +62,9 @@ let programTable = $('#ProgramTable').DataTable({
         type: "POST"
     },
     columns: [
-        { data: "Code" },
-        { data: "Name" },
-        { data: "CollegeCode" },
+        { data: "code" },
+        { data: "name" },
+        { data: "collegecode" },
         { data: "actions", orderable: false, searchable: false }
     ]
 });
@@ -85,5 +85,6 @@ setupDeleteHandler(
 setupEditSubmit(
     '#editProgramForm',
     '#ProgramTable',
-    '#editProgramModal'
+    '#editProgramModal',
+    'programs'
 );
