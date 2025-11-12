@@ -10,7 +10,6 @@ programs_bp = Blueprint("programs", __name__)
 @login_required
 def index() -> str:
     reqPKeys = CollegesModel.get_all_pkeys()
-    print(reqPKeys)
     return render_template("programs/index.html", active_page = 'programs', header_var='Program', reqPKeys=reqPKeys)
 
 @programs_bp.route("/programs/data", methods=["POST"])
@@ -139,7 +138,6 @@ def check_duplicates() -> Response:
 def get_program_info(code : str):
     try:
         program_data = ProgramsModel.program_info(code)
-        print(program_data)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status" : "error", "message" : f"An error occured when getting the program's data/information"}), 404

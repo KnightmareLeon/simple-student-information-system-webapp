@@ -158,7 +158,6 @@ def edit_student() -> Response:
 def check_duplicates():
     id = request.args.get('id', '').strip()
     exists = StudentsModel.record_exists("ID", id)
-    print(exists)
     return  jsonify({'exists' : exists}), 200
 
 @students_bp.route("/students/info/<string:id>", methods=["GET"])

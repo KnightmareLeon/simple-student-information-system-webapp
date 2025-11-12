@@ -2,7 +2,7 @@ from psycopg2 import pool
 from psycopg2.extras import RealDictCursor, RealDictRow
 from psycopg2 import errors
 
-from config import HOST, USER, PASSWORD, DATABASE
+from config import HOST, USER, PASSWORD, PORT, DATABASE
 
 from enum import Enum
 
@@ -24,7 +24,9 @@ def start_pool():
         host=HOST,
         user=USER,
         password=PASSWORD,
-        database=DATABASE
+        dbname=DATABASE,
+        port=PORT,
+        sslmode="require"
     )
 
 def get_connection():
