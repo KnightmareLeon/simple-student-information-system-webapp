@@ -24,13 +24,19 @@ body {
     font-size: 1.25rem;
     text-transform: uppercase;
     color: #ffffff;
+}
+
+.sidebar-header{
     cursor: pointer;
+}
+
+.offcanvas-header{
+    cursor: default;
 }
 
 .sidebar-header .icon {
     font-size: 1.5rem;
 }
-
 
 .sidebar.minimized {
     min-width: 85px;
@@ -115,6 +121,7 @@ tr:hover button{
 .uppercase-field{
     text-transform: uppercase;
 }
+
 @keyframes fadeInActive {
     from {
         color: var(--bs-nav-link-color); 

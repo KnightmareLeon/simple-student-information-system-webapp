@@ -15,10 +15,8 @@ function showToast(message, type = "success", position = "top-0 start-50 transla
     toast.show();
 }
 
-const sidebar = document.querySelector('.sidebar');
-const toggleHeader = document.getElementById('sidebarToggle');
-
-toggleHeader.addEventListener('click', () => {
-    sidebar.classList.toggle('minimized');
-    document.cookie = "sidebar=" + (sidebar.classList.contains('minimized') ? "minimized" : "expanded") + ";path=/";
+$('#sidebarToggle').on('click', function() {
+    const $sidebar = $('.sidebar');
+    $sidebar.toggleClass('minimized');
+    document.cookie = "sidebar=" + ($sidebar.hasClass('minimized') ? "minimized" : "expanded") + ";path=/";
 });

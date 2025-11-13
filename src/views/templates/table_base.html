@@ -18,7 +18,7 @@
         Add {{ header_var }}
     </button>
 </div>
-<div class="table-responsive-md flex-grow-1">
+<div class="table-responsive-md flex-grow-1 overflow-x-hidden">
     <table id="{{header_var}}Table" class="table table-dark shadow table-striped table-hover">
         <thead>
             <tr>
@@ -33,6 +33,8 @@
     </table>
 </div>
 {% endblock %}
+
+{% include "partials/_confirmation_modal.html" %}
 
 {% block scripts %}
 {{ super() }}

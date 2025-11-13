@@ -1,3 +1,7 @@
+$('#userProfile').on('click', function() {
+    $('#userProfileModal').modal('show');
+});
+
 const ctx = document.getElementById('dashboardStudentChart')
 const myBarChart = new Chart(ctx, {
     type: 'bar',
