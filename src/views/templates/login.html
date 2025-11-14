@@ -31,6 +31,9 @@
                     {{ form.password.label(class="form-label") }}<br>
                     {{ form.password(class="form-control", size=32) }}
                     </p>
+                    <div class="d-inline-flex gap-2 align-items-center justify-content-center">
+                    {{ form.remember_me.label(class="form-label") }} {{ form.remember_me(class="form-check") }}
+                    </div>
                     <div class="d-flex justify-content-center">
                         <p>{{ form.submit(class="btn btn-primary") }}</p>
                     </div>

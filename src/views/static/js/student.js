@@ -40,6 +40,7 @@ $('#StudentTable').on('click', '.info-btn', function () {
     const studentID = $(this).data('id')
     $.get(`/students/info/${studentID}`, function(resp){
         if (resp.status === "success") {
+            $('#studentImg').attr('src', resp.data.image);
             $('#infoID').text(resp.data.id);
             $('#infoFirstName').text(resp.data.firstname);
             $('#infoLastName').text(resp.data.lastname);
@@ -72,6 +73,16 @@ let studentTable = $('#StudentTable').DataTable({
         { data: "gender" },
         { data: "yearlevel" },
         { data: "programcode" },
+        { 
+            data: "image",
+            orderable: false,
+            searchable: false,
+            render: function(data){
+                return `<div style="width: 64px;">
+                            <img src="${data}" alt="" class="img-fluid shadow rounded-circle">
+                        </div>`;
+            }
+        },
         { data: "actions", orderable: false, searchable: false }
     ]
 });

@@ -4,6 +4,8 @@ from flask_login import login_required
 from src.models.StudentsModel import StudentsModel
 from src.models.ProgramsModel import ProgramsModel
 
+from src.services.Supabase import get_img_url
+
 students_bp = Blueprint("students", __name__)
 
 @students_bp.route("/students")
@@ -41,6 +43,7 @@ def data() -> Response:
 
     for r in records:
         r["actions"] = render_template("partials/_row_buttons.html", key=r["id"])
+        r["image"] = get_img_url(r['image'])
 
     total_records = StudentsModel.get_total()
 
@@ -165,6 +168,7 @@ def check_duplicates():
 def get_students_info(id : str):
     try:
         student_data = StudentsModel.students_info(id)
+        student_data['image'] = get_img_url(student_data['image'])
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({

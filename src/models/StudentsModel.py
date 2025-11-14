@@ -56,12 +56,11 @@ class StudentsModel(BaseTableModel):
         the program name, college code, and college name that the student
         is under.
         """
-        result = None
 
         return execute_query(
             query = (
                 "SELECT s.id, s.firstname, s.lastname, s.gender, "
-                "s.yearlevel, s.programcode, p.name AS programname, "
+                "s.yearlevel, s.programcode, s.image, p.name AS programname, "
                 "c.code AS collegecode, c.name AS collegename "
                 "FROM students as s "
                 "LEFT JOIN programs as p ON s.programcode = p.code "
@@ -72,3 +71,22 @@ class StudentsModel(BaseTableModel):
             fetch = FetchMode.ONE,
             as_dict = True
         )
+    
+    @classmethod
+    def get_image_path(
+        cls,
+        id : str
+    ) -> dict[str] :
+        """
+        Returns the image path for a student.
+        """
+
+        return execute_query(
+            query = (
+                "SELECT s.image "
+                "FROM students as s "
+                "WHERE s.id = %s" 
+            ),
+            params = (id,),
+            fetch = FetchMode.ONE
+        )[0]

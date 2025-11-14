@@ -1,6 +1,14 @@
 {% extends "partials/_base_info_modal.html" %}
 
 {% block modal_body %}
+    <div class="d-flex justify-content-center mb-4">
+        <img
+            class="img-fluid rounded-circle shadow"
+            alt="Student image"
+            id="studentImg"
+            style="max-width: 128px;"
+        >
+    </div>
     <div class="mb-3">ID Number: <span id="infoID"></span></div>
     <div class="mb-3">Name: <span id="infoFirstName"></span>  <span id="infoLastName"></span></div>
     <div class="mb-3">Gender: <span id="infoGender"></span></div>
