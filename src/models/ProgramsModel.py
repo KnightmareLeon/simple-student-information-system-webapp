@@ -1,6 +1,8 @@
 from src.models.DatabaseConnection import execute_query, FetchMode
 from .BaseTableModel import BaseTableModel
 
+from src.cache import cache
+
 class ProgramsModel(BaseTableModel):
 
     _table_name = "programs"
@@ -23,6 +25,19 @@ class ProgramsModel(BaseTableModel):
     # )
 
     @classmethod
+    def delete(cls, key):
+        cls.general_cache_clear()
+        cache.delete_memoized(cls.program_info, key)
+        super().delete(key)
+
+    @classmethod
+    def update(cls, orig_key, data):
+        cls.general_cache_clear()
+        cache.delete_memoized(cls.program_info, orig_key)
+        super().update(orig_key, data)
+
+    @classmethod
+    @cache.memoize(timeout=300)
     def total_programs_by_college(
         cls,
         college_code : str
@@ -43,6 +58,7 @@ class ProgramsModel(BaseTableModel):
         return 0 if not res else res[1]
     
     @classmethod
+    @cache.memoize(timeout=300)
     def program_info(
         cls,
         code : str

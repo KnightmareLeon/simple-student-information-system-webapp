@@ -11,13 +11,18 @@ from src.controllers.UserController import user_bp
 
 from src.models.User import User
 
+from src.cache import cache
+
 from config import SECRET_KEY
 
 login_manager = LoginManager()
 def create_app():
     app = Flask(__name__, template_folder="views/templates", static_folder="views/static")
     app.config['SECRET_KEY'] = SECRET_KEY
+    app.config['CACHE_TYPE'] = 'SimpleCache'
+    app.config['CACHE_DEFAULT_TIMEOUT'] = 300
     CSRFProtect(app)
+    cache.init_app(app)
 
     login_manager.init_app(app)
     login_manager.login_view = 'user.login'

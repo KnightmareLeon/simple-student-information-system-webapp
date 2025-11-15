@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from .DatabaseConnection import execute_query, FetchMode
+from src.cache import cache
 
 class BaseTableModel(ABC):
 
@@ -42,7 +43,8 @@ class BaseTableModel(ABC):
         )
 
     @classmethod
-    def get_aLL_records(cls) -> list[dict]:
+    @cache.memoize(timeout=300)
+    def get_all_records(cls) -> list[dict]:
         """
         Gets all records from the table.
         """
@@ -54,6 +56,7 @@ class BaseTableModel(ABC):
         )
     
     @classmethod
+    @cache.memoize(timeout=300)
     def get_filtered_records(
             cls,
             search_value : str,
@@ -82,6 +85,7 @@ class BaseTableModel(ABC):
         )
 
     @classmethod
+    @cache.memoize(timeout=300)
     def get_total_filtered_records(
             cls,
             search_value : str
@@ -102,6 +106,7 @@ class BaseTableModel(ABC):
         )[0]
 
     @classmethod
+    @cache.memoize(timeout=300)
     def get_all_pkeys(cls) -> list[dict]:
         """
         Gets all primary keys from the table.
@@ -117,6 +122,7 @@ class BaseTableModel(ABC):
         )
 
     @classmethod
+    @cache.memoize(timeout=300)
     def record_exists(
         cls,
         column : str,
@@ -147,6 +153,8 @@ class BaseTableModel(ABC):
         col_query = ",".join([f"{col}" for col in columns])
         param_plcholders = ",".join([f"%s" for val in values])
         params = tuple(values)
+
+        cls.general_cache_clear()
 
         execute_query(
             query = (
@@ -190,6 +198,7 @@ class BaseTableModel(ABC):
         )
 
     @classmethod
+    @cache.memoize(timeout=300)
     def get_total(cls) -> int:
         """
         Gets the total number of rows from the table.
@@ -199,3 +208,10 @@ class BaseTableModel(ABC):
             query = f"SELECT COUNT(*) FROM {cls.get_table_name()}",
             fetch = FetchMode.ONE,
         )[0]
+
+    @classmethod
+    def general_cache_clear(cls):
+        cache.delete_memoized(cls.get_all_records, cls)
+        cache.delete_memoized(cls.get_filtered_records, cls)
+        cache.delete_memoized(cls.get_total_filtered_records, cls)
+        cache.delete_memoized(cls.get_total, cls)

@@ -10,6 +10,7 @@ psycopg2-binary = "*"
 flask-login = "*"
 flask-wtf = "*"
 supabase = "*"
+flask-caching = "*"
 
 [dev-packages]
 pytest = "*"

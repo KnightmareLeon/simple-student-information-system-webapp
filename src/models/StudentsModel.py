@@ -1,11 +1,13 @@
 from .DatabaseConnection import execute_query, FetchMode
-from .BaseTableModel import BaseTableModel
+from .BaseTableModel import BaseTableModel as Base
 
-class StudentsModel(BaseTableModel):
+from src.cache import cache
+
+class StudentsModel(Base):
 
     _table_name = "students"
     _primary = "id"
-    _columns : list[str] = ["id", "firstname", "lastname", "gender", "yearlevel", "programcode"]
+    _columns : list[str] = ["id", "firstname", "lastname", "gender", "yearlevel", "programcode", "image"]
 
     # CREATE TABLE IF NOT EXISTS public.students
     # (
@@ -15,6 +17,7 @@ class StudentsModel(BaseTableModel):
     #     gender gender NOT NULL,
     #     yearlevel year_level NOT NULL,
     #     programcode character varying(20) COLLATE pg_catalog."default",
+    #     image text COLLATE pg_catalog."default",
     #     CONSTRAINT students_pkey PRIMARY KEY (id),
     #     CONSTRAINT students_fkey FOREIGN KEY (programcode)
     #         REFERENCES public.programs (code) MATCH SIMPLE
@@ -26,6 +29,21 @@ class StudentsModel(BaseTableModel):
     # )
 
     @classmethod
+    def delete(cls, key):
+        cls.general_cache_clear()
+        cache.delete_memoized(cls.students_info, key)
+        cache.delete_memoized(cls.get_image_path, key)
+        super().delete(key)
+
+    @classmethod
+    def update(cls, orig_key, data):
+        cls.general_cache_clear()
+        cache.delete_memoized(cls.students_info, orig_key)
+        cache.delete_memoized(cls.get_image_path, orig_key)
+        super().update(orig_key, data)
+
+    @classmethod
+    @cache.memoize(timeout=300)
     def total_students_by_program(
         cls,
         program_code : str
@@ -47,6 +65,7 @@ class StudentsModel(BaseTableModel):
         return 0 if res is None else res[1]
 
     @classmethod
+    @cache.memoize(timeout=300)
     def students_info(
         cls,
         id : str
@@ -73,6 +92,7 @@ class StudentsModel(BaseTableModel):
         )
     
     @classmethod
+    @cache.memoize(timeout=300)
     def get_image_path(
         cls,
         id : str

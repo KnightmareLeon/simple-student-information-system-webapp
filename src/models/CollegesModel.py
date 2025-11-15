@@ -1,6 +1,8 @@
 from .DatabaseConnection import execute_query, FetchMode
 from .BaseTableModel import BaseTableModel
 
+from src.cache import cache
+
 class CollegesModel(BaseTableModel):
 
     _table_name : str = "colleges"
@@ -18,6 +20,19 @@ class CollegesModel(BaseTableModel):
     # )
 
     @classmethod
+    def delete(cls, key):
+        cls.general_cache_clear()
+        cache.delete_memoized(cls.college_info, key)
+        super().delete(key)
+
+    @classmethod
+    def update(cls, orig_key, data):
+        cls.general_cache_clear()
+        cache.delete_memoized(cls.college_info, orig_key)
+        super().update(orig_key, data)
+
+    @classmethod
+    @cache.memoize(timeout=300)
     def college_info(
         cls,
         code : str
