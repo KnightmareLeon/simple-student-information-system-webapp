@@ -4,42 +4,36 @@ from .BaseTableModel import BaseTableModel
 from src.cache import cache
 
 class ProgramsModel(BaseTableModel):
+    """
+    CREATE TABLE IF NOT EXISTS public.programs
+    (
+        code character varying(20) COLLATE pg_catalog."default" NOT NULL,
+        name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+        collegecode character varying(5) COLLATE pg_catalog."default",
+        CONSTRAINT programs_pkey PRIMARY KEY (code),
+        CONSTRAINT unique_program_name UNIQUE (name),
+        CONSTRAINT programs_fkey FOREIGN KEY (collegecode)
+            REFERENCES public.colleges (code) MATCH SIMPLE
+            ON UPDATE CASCADE
+            ON DELETE SET NULL,
+        CONSTRAINT program_code_format CHECK (code::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(code::text) <= 20),
+        CONSTRAINT program_name_format CHECK (name::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(name::text) <= 100)
+    )
+    """
 
-    _table_name = "programs"
-    _primary = "code"
-    _columns : list[str] = ["code", "name","collegecode"]
-
-    # CREATE TABLE IF NOT EXISTS public.programs
-    # (
-    #     code character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    #     name character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    #     collegecode character varying(5) COLLATE pg_catalog."default",
-    #     CONSTRAINT programs_pkey PRIMARY KEY (code),
-    #     CONSTRAINT unique_program_name UNIQUE (name),
-    #     CONSTRAINT programs_fkey FOREIGN KEY (collegecode)
-    #         REFERENCES public.colleges (code) MATCH SIMPLE
-    #         ON UPDATE CASCADE
-    #         ON DELETE SET NULL,
-    #     CONSTRAINT program_code_format CHECK (code::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(code::text) <= 20),
-    #     CONSTRAINT program_name_format CHECK (name::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(name::text) <= 100)
-    # )
-
-    @classmethod
-    def delete(cls, key):
-        cls.general_cache_clear()
-        cache.delete_memoized(cls.program_info, key)
+    def delete(self, key):
+        self.general_cache_clear()
+        cache.delete_memoized(self.program_info, key)
         super().delete(key)
 
-    @classmethod
-    def update(cls, orig_key, data):
-        cls.general_cache_clear()
-        cache.delete_memoized(cls.program_info, orig_key)
+    def update(self, orig_key, data):
+        self.general_cache_clear()
+        cache.delete_memoized(self.program_info, orig_key)
         super().update(orig_key, data)
 
-    @classmethod
     @cache.memoize(timeout=300)
     def total_programs_by_college(
-        cls,
+        self,
         college_code : str
     ) -> int :
         """
@@ -49,7 +43,7 @@ class ProgramsModel(BaseTableModel):
         res = execute_query(
             query = (
                 f"SELECT collegecode, COUNT(collegeCodec) "
-                f"FROM {cls.get_table_name()} "
+                f"FROM {self.table_name} "
                 f"WHERE collegecode = %s GROUP BY collegecode"
             ),
             params = (college_code,),
@@ -57,10 +51,9 @@ class ProgramsModel(BaseTableModel):
         )
         return 0 if not res else res[1]
     
-    @classmethod
     @cache.memoize(timeout=300)
     def program_info(
-        cls,
+        self,
         code : str
     ) -> dict[int | str] :
         """
@@ -68,14 +61,13 @@ class ProgramsModel(BaseTableModel):
         the total students under it and  the college name that the program
         is under.
         """
-        result = None
         return execute_query(
             query = (
                 "SELECT "
                 "p.code, p.name, p.collegecode, "
                 "c.name AS collegename, "
                 "COUNT(s.programcode) AS totalstds "
-                "FROM programs as p "
+                f"FROM {self.table_name} as p "
                 "LEFT JOIN colleges as c ON p.collegecode = c.code "
                 "LEFT JOIN students as s ON p.code = s.programcode "
                 "WHERE p.code = %s "
@@ -85,3 +77,9 @@ class ProgramsModel(BaseTableModel):
             fetch = FetchMode.ONE,
             as_dict = True
         )
+
+prg_table : ProgramsModel = ProgramsModel(
+    table_name="programs",
+    primary="code",
+    columns=["code","name","collegecode"]
+)

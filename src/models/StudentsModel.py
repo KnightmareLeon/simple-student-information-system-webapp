@@ -4,48 +4,42 @@ from .BaseTableModel import BaseTableModel as Base
 from src.cache import cache
 
 class StudentsModel(Base):
+    """
+    CREATE TABLE IF NOT EXISTS public.students
+    (
+        id character(9) COLLATE pg_catalog."default" NOT NULL,
+        firstname character varying(100) COLLATE pg_catalog."default" NOT NULL,
+        lastname character varying(100) COLLATE pg_catalog."default" NOT NULL,
+        gender gender NOT NULL,
+        yearlevel year_level NOT NULL,
+        programcode character varying(20) COLLATE pg_catalog."default",
+        image text COLLATE pg_catalog."default",
+        CONSTRAINT students_pkey PRIMARY KEY (id),
+        CONSTRAINT students_fkey FOREIGN KEY (programcode)
+            REFERENCES public.programs (code) MATCH SIMPLE
+            ON UPDATE CASCADE
+            ON DELETE SET NULL,
+        CONSTRAINT first_name_format CHECK (firstname::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(firstname::text) <= 100),
+        CONSTRAINT id_format CHECK (id ~ '^(?:19(?:6[7-9]|[7-9][0-9])|20[0-9]{2}|2100)-(?:000[1-9]|00[1-9][0-9]|0[1-9][0-9]{2}|[1-9][0-9]{3})$'::text),
+        CONSTRAINT last_name_format CHECK (lastname::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(lastname::text) <= 100)
+    )
+    """
 
-    _table_name = "students"
-    _primary = "id"
-    _columns : list[str] = ["id", "firstname", "lastname", "gender", "yearlevel", "programcode", "image"]
-
-    # CREATE TABLE IF NOT EXISTS public.students
-    # (
-    #     id character(9) COLLATE pg_catalog."default" NOT NULL,
-    #     firstname character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    #     lastname character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    #     gender gender NOT NULL,
-    #     yearlevel year_level NOT NULL,
-    #     programcode character varying(20) COLLATE pg_catalog."default",
-    #     image text COLLATE pg_catalog."default",
-    #     CONSTRAINT students_pkey PRIMARY KEY (id),
-    #     CONSTRAINT students_fkey FOREIGN KEY (programcode)
-    #         REFERENCES public.programs (code) MATCH SIMPLE
-    #         ON UPDATE CASCADE
-    #         ON DELETE SET NULL,
-    #     CONSTRAINT first_name_format CHECK (firstname::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(firstname::text) <= 100),
-    #     CONSTRAINT id_format CHECK (id ~ '^(?:19(?:6[7-9]|[7-9][0-9])|20[0-9]{2}|2100)-(?:000[1-9]|00[1-9][0-9]|0[1-9][0-9]{2}|[1-9][0-9]{3})$'::text),
-    #     CONSTRAINT last_name_format CHECK (lastname::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(lastname::text) <= 100)
-    # )
-
-    @classmethod
-    def delete(cls, key):
-        cls.general_cache_clear()
-        cache.delete_memoized(cls.students_info, key)
-        cache.delete_memoized(cls.get_image_path, key)
+    def delete(self, key):
+        self.general_cache_clear()
+        cache.delete_memoized(self.students_info, key)
+        cache.delete_memoized(self.get_image_path, key)
         super().delete(key)
 
-    @classmethod
-    def update(cls, orig_key, data):
-        cls.general_cache_clear()
-        cache.delete_memoized(cls.students_info, orig_key)
-        cache.delete_memoized(cls.get_image_path, orig_key)
+    def update(self, orig_key, data):
+        self.general_cache_clear()
+        cache.delete_memoized(self.students_info, orig_key)
+        cache.delete_memoized(self.get_image_path, orig_key)
         super().update(orig_key, data)
 
-    @classmethod
     @cache.memoize(timeout=300)
     def total_students_by_program(
-        cls,
+        self,
         program_code : str
     ) -> int :
         """
@@ -55,7 +49,7 @@ class StudentsModel(Base):
         res = execute_query(
             query = (
                 f"SELECT programcode, COUNT(programcode) " 
-                f"FROM {cls.get_table_name()} "
+                f"FROM {self.table_name} "
                 f"WHERE programcode = %s GROUP BY programcode"
             ),
             params = (program_code,),
@@ -67,7 +61,7 @@ class StudentsModel(Base):
     @classmethod
     @cache.memoize(timeout=300)
     def students_info(
-        cls,
+        self,
         id : str
     ) -> dict[int | str] :
         """
@@ -94,7 +88,7 @@ class StudentsModel(Base):
     @classmethod
     @cache.memoize(timeout=300)
     def get_image_path(
-        cls,
+        self,
         id : str
     ) -> dict[str] :
         """
@@ -110,3 +104,9 @@ class StudentsModel(Base):
             params = (id,),
             fetch = FetchMode.ONE
         )[0]
+
+std_table : StudentsModel = StudentsModel(
+    table_name="students",
+    primary="id",
+    columns=["id", "firstname", "lastname", "gender", "yearlevel", "programcode", "image"]
+)

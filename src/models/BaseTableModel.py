@@ -4,61 +4,38 @@ from src.cache import cache
 
 class BaseTableModel(ABC):
 
-    _table_name : str = None
-    _primary : str = None
-    _columns : list[str] = None
+    def __init__(self, table_name : str, primary : str, columns : list[str]):
+        self.table_name : str = table_name
+        self.primary : str = primary
+        self.columns : list[str] = columns
 
-    @classmethod
-    def get_table_name(cls) -> str:
-        """
-        Returns the name of the table.
-        """
-        return cls._table_name
-
-    @classmethod
-    def get_primary_key(cls) -> str:
-        """
-        Returns the primary key of the table.
-        """
-        return cls._primary
-
-    @classmethod
-    def get_columns(cls) -> list[str]:
-        """
-        Returns the columns of the table.
-        """
-        return cls._columns
-
-    @classmethod
-    def get_record(cls, id: str) -> dict[str, int | str]:
+    def get_record(self, id: str) -> dict[str, int | str]:
         """
         Read one data from the table. The method returns a dictionary as the result.
         """
 
         return execute_query(
-            query = f"SELECT * FROM {cls.get_table_name()} WHERE {cls.get_primary_key()} = %s",
+            query = f"SELECT * FROM {self.table_name} WHERE {self.primary} = %s",
             params = (id, ),
             fetch = FetchMode.ONE,
             as_dict = True
         )
 
-    @classmethod
     @cache.memoize(timeout=300)
-    def get_all_records(cls) -> list[dict]:
+    def get_all_records(self) -> list[dict]:
         """
         Gets all records from the table.
         """
 
         return execute_query(
-            query = f"SELECT * FROM {cls.get_table_name()}",
+            query = f"SELECT * FROM {self.table_name}",
             fetch = FetchMode.ALL,
             as_dict = True
         )
-    
-    @classmethod
+
     @cache.memoize(timeout=300)
     def get_filtered_records(
-            cls,
+            self,
             search_value : str,
             sort_column : str,
             sort_dir : str,
@@ -68,13 +45,13 @@ class BaseTableModel(ABC):
         """
         Gets all filtered records from the table.
         """
-        search_query = " OR ".join([f"text({col}) ILIKE %s" for col in cls.get_columns()])
-        params = tuple( [f"%{search_value}%"] * len(cls.get_columns()) )
+        search_query = " OR ".join([f"text({col}) ILIKE %s" for col in self.columns])
+        params = tuple( [f"%{search_value}%"] * len(self.columns) )
 
         return execute_query(
             query = (
                 "SELECT * \n"
-                f"FROM {cls.get_table_name()} \n"
+                f"FROM {self.table_name} \n"
                 f"WHERE {search_query} "
                 f"ORDER BY {sort_column} {sort_dir} "
                 f"LIMIT {limit} OFFSET {offset}"
@@ -84,47 +61,44 @@ class BaseTableModel(ABC):
             as_dict = True
         )
 
-    @classmethod
     @cache.memoize(timeout=300)
     def get_total_filtered_records(
-            cls,
+            self,
             search_value : str
         ) -> int:
         """
         Gets the total number of filtered records from the table.
         """
-        search_query = " OR ".join([f"text({col}) ILIKE %s" for col in cls.get_columns()])
-        params = tuple([f"%{search_value}%"] * len(cls.get_columns()))
+        search_query = " OR ".join([f"text({col}) ILIKE %s" for col in self.columns])
+        params = tuple([f"%{search_value}%"] * len(self.columns))
         return execute_query(
             query = (
                 "SELECT COUNT(*) "
-                f"FROM {cls.get_table_name()} "
+                f"FROM {self.table_name} "
                 f"WHERE {search_query}"
             ),
             params = params,
             fetch = FetchMode.ONE,
         )[0]
 
-    @classmethod
     @cache.memoize(timeout=300)
-    def get_all_pkeys(cls) -> list[dict]:
+    def get_all_pkeys(self) -> list[dict]:
         """
         Gets all primary keys from the table.
         """
         return execute_query(
             query = (
-                f"SELECT {cls.get_primary_key()} "
-                f"FROM {cls.get_table_name()} "
-                f"ORDER BY {cls.get_primary_key()} ASC"
+                f"SELECT {self.primary} "
+                f"FROM {self.table_name} "
+                f"ORDER BY {self.primary} ASC"
             ),
             fetch = FetchMode.ALL,
             as_dict = True
         )
 
-    @classmethod
     @cache.memoize(timeout=300)
     def record_exists(
-        cls,
+        self,
         column : str,
         value : str
     ) -> bool :
@@ -133,13 +107,12 @@ class BaseTableModel(ABC):
         """
 
         return execute_query(
-            query = f"SELECT 1 FROM {cls.get_table_name()} WHERE {column}=%s",
+            query = f"SELECT 1 FROM {self.table_name} WHERE {column}=%s",
             params = (value,),
             fetch = FetchMode.ONE
         ) is not None
 
-    @classmethod
-    def create(cls, data : dict):
+    def create(self, data : dict):
         """
         Creates a new record for the table.
         """
@@ -154,29 +127,27 @@ class BaseTableModel(ABC):
         param_plcholders = ",".join([f"%s" for val in values])
         params = tuple(values)
 
-        cls.general_cache_clear()
+        self.general_cache_clear()
 
         execute_query(
             query = (
-                f"INSERT INTO {cls.get_table_name()} ({col_query}) "
+                f"INSERT INTO {self.table_name} ({col_query}) "
                 f"VALUES ({param_plcholders})"
             ),
             params = params
         )
 
-    @classmethod
-    def delete(cls, key : str):
+    def delete(self, key : str):
         """
         Deletes data from the table based on the primary key.
         """
 
         execute_query(
-            query = f"DELETE FROM {cls.get_table_name()} WHERE {cls._primary} = %s",
+            query = f"DELETE FROM {self.table_name} WHERE {self.primary} = %s",
             params = (key,)
         )
 
-    @classmethod
-    def update(cls, orig_key : str, data : dict):
+    def update(self, orig_key : str, data : dict):
         """
         Creates a new record for the table.
         """
@@ -191,27 +162,25 @@ class BaseTableModel(ABC):
 
         execute_query(
             query = (
-                f"UPDATE {cls.get_table_name()} {set_query} "
-                f"WHERE {cls.get_primary_key()} = %s"
+                f"UPDATE {self.table_name} {set_query} "
+                f"WHERE {self.primary} = %s"
             ),
             params = values
         )
 
-    @classmethod
     @cache.memoize(timeout=300)
-    def get_total(cls) -> int:
+    def get_total(self) -> int:
         """
         Gets the total number of rows from the table.
         """
 
         return execute_query(
-            query = f"SELECT COUNT(*) FROM {cls.get_table_name()}",
+            query = f"SELECT COUNT(*) FROM {self.table_name}",
             fetch = FetchMode.ONE,
         )[0]
 
-    @classmethod
-    def general_cache_clear(cls):
-        cache.delete_memoized(cls.get_all_records, cls)
-        cache.delete_memoized(cls.get_filtered_records, cls)
-        cache.delete_memoized(cls.get_total_filtered_records, cls)
-        cache.delete_memoized(cls.get_total, cls)
+    def general_cache_clear(self):
+        cache.delete_memoized(self.get_all_records)
+        cache.delete_memoized(self.get_filtered_records)
+        cache.delete_memoized(self.get_total_filtered_records)
+        cache.delete_memoized(self.get_total)

@@ -1,7 +1,7 @@
 from flask import Blueprint, Response, jsonify, render_template, request
 from flask_login import login_required
 
-from src.models.CollegesModel import CollegesModel
+from src.models.CollegesModel import col_table
 
 colleges_bp = Blueprint("colleges", __name__)
 
@@ -24,9 +24,9 @@ def data() -> Response:
     if column_name:
         column_name = column_name.replace(" ", "").lower()
     else:
-        column_name = CollegesModel.get_primary_key()
+        column_name = col_table.primary
 
-    records = CollegesModel.get_filtered_records(
+    records = col_table.get_filtered_records(
         search_value=search_value,
         sort_column=column_name,
         sort_dir=order_dir,
@@ -34,11 +34,11 @@ def data() -> Response:
         offset=start
     )
 
-    total_filtered_records = CollegesModel.get_total_filtered_records(search_value=search_value)
+    total_filtered_records = col_table.get_total_filtered_records(search_value=search_value)
 
     for r in records:
         r["actions"] = render_template("partials/_row_buttons.html", key=r["code"])
-    total_records = CollegesModel.get_total()
+    total_records = col_table.get_total()
 
     return jsonify({
         "draw": draw,
@@ -53,8 +53,8 @@ def add_college() -> Response:
     code = request.form.get("addCollegePrimaryCode")
     name = request.form.get("addCollegeName")
 
-    code_dup = CollegesModel.record_exists("code", code)
-    name_dup =  CollegesModel.record_exists("name", name)
+    code_dup = col_table.record_exists("code", code)
+    name_dup =  col_table.record_exists("name", name)
     if code_dup or name_dup:
         message = []
         message.append(f"College code '{code}' already exists! " if code_dup else "")
@@ -62,7 +62,7 @@ def add_college() -> Response:
         return jsonify({"status": "error", "message": " , ".join(message)}), 409
     try:
         new_data = {"code" : code, "name" : name}
-        CollegesModel.create(new_data)
+        col_table.create(new_data)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status": "error", "message": f"An error occurred adding College {code}."}), 500
@@ -72,7 +72,7 @@ def add_college() -> Response:
 @login_required
 def delete_college(code : str) -> Response:
     try:
-        CollegesModel.delete(code)
+        col_table.delete(code)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status": "error", "message": "College record deletion failed."}), 500
@@ -83,7 +83,7 @@ def delete_college(code : str) -> Response:
 @login_required
 def get_edit_info(code : str) -> Response:
     try:
-        record_data = CollegesModel.get_record(code)
+        record_data = col_table.get_record(code)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify(status="error", message="Error getting college data for editing."), 500
@@ -94,12 +94,12 @@ def get_edit_info(code : str) -> Response:
 def edit_college() -> Response:
     try:
         orig_code = request.form.get("editOriginalCollegeCode")
-        orig_name = CollegesModel.get_record(orig_code)["name"]
+        orig_name = col_table.get_record(orig_code)["name"]
         code = request.form.get("editCollegePrimaryCode")
         name = request.form.get("editCollegeName")
 
-        code_dup = CollegesModel.record_exists("code", code)
-        name_dup =  CollegesModel.record_exists("name", name)
+        code_dup = col_table.record_exists("code", code)
+        name_dup =  col_table.record_exists("name", name)
         if (code_dup and orig_code != code ) or ( name_dup and orig_name != name):
             message = []
             message.append(f"College code '{code}' already exists! " if code_dup and orig_code != code else "")
@@ -107,7 +107,7 @@ def edit_college() -> Response:
             return jsonify({"status": "error", "message": " , ".join(message)}), 409
 
         new_data = {"code" : code, "name" : name}
-        CollegesModel.update(orig_code, new_data)
+        col_table.update(orig_code, new_data)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status": "error", "message": f"An error occurred updating college."}), 500
@@ -118,8 +118,8 @@ def edit_college() -> Response:
 def check_duplicates() -> Response:
     code = request.args.get('code', '').strip()
     name = request.args.get('name', '').strip()
-    exists_code = CollegesModel.record_exists("code", code)
-    exists_name = CollegesModel.record_exists("name", name)
+    exists_code = col_table.record_exists("code", code)
+    exists_name = col_table.record_exists("name", name)
     return  jsonify({
             'exists_code': exists_code,
             'exists_name': exists_name
@@ -129,7 +129,7 @@ def check_duplicates() -> Response:
 @login_required
 def get_college_info(code : str) -> Response:
     try:
-        college_data = CollegesModel.college_info(code)
+        college_data = col_table.college_info(code)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status" : "error", "message" : f"An error occured when getting the program's data/information"}), 500

@@ -1,15 +1,15 @@
 from flask import Blueprint, Response, render_template, request, jsonify
 from flask_login import login_required
 
-from src.models.ProgramsModel import ProgramsModel
-from src.models.CollegesModel import CollegesModel
+from src.models.ProgramsModel import prg_table
+from src.models.CollegesModel import col_table
 
 programs_bp = Blueprint("programs", __name__)
 
 @programs_bp.route("/programs")
 @login_required
 def index() -> str:
-    reqPKeys = CollegesModel.get_all_pkeys()
+    reqPKeys = col_table.get_all_pkeys()
     return render_template("programs/index.html", active_page = 'programs', header_var='Program', reqPKeys=reqPKeys)
 
 @programs_bp.route("/programs/data", methods=["POST"])
@@ -26,9 +26,9 @@ def data() -> Response:
     if column_name:
         column_name = column_name.replace(" ", "").lower()
     else:
-        column_name = ProgramsModel.get_primary_key()
+        column_name = prg_table.primary
 
-    records = ProgramsModel.get_filtered_records(
+    records = prg_table.get_filtered_records(
         search_value=search_value,
         sort_column=column_name,
         sort_dir=order_dir,
@@ -36,12 +36,12 @@ def data() -> Response:
         offset=start
     )
 
-    total_filtered_records = ProgramsModel.get_total_filtered_records(search_value=search_value)
+    total_filtered_records = prg_table.get_total_filtered_records(search_value=search_value)
 
     for r in records:
         r["actions"] = render_template("partials/_row_buttons.html", key=r["code"])
 
-    total_records = ProgramsModel.get_total()
+    total_records = prg_table.get_total()
 
     return jsonify({
         "draw": draw,
@@ -57,8 +57,8 @@ def add_program() -> Response:
     name = request.form.get("addProgramName")
     college_code = request.form.get("addForeignCollegeCode")
 
-    code_dup = ProgramsModel.record_exists("code", code)
-    name_dup =  ProgramsModel.record_exists("name", name)
+    code_dup = prg_table.record_exists("code", code)
+    name_dup =  prg_table.record_exists("name", name)
     if code_dup or name_dup:
         message = []
         message.append(f"Program code '{code}' already exists! " if code_dup else "")
@@ -67,7 +67,7 @@ def add_program() -> Response:
     
     try:
         new_data = {"Code" : code, "name" : name, "collegecode" : college_code}
-        ProgramsModel.create(new_data)
+        prg_table.create(new_data)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status": "error", "message": f"An error occurred when adding program '{code}'."}), 500
@@ -78,7 +78,7 @@ def add_program() -> Response:
 @login_required
 def delete_program(code : str) -> Response:
     try:
-        ProgramsModel.delete(code)
+        prg_table.delete(code)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status": "error", "message": "Program record deletion failed."}), 500
@@ -89,7 +89,7 @@ def delete_program(code : str) -> Response:
 @login_required
 def get_edit_info(code : str) -> Response:
     try:
-        recordData = ProgramsModel.get_record(code)
+        recordData = prg_table.get_record(code)
     except Exception as e:
         return jsonify(status="error", message="Error getting program data for editing."), 500
     return jsonify({"status" : "success", "data" : recordData}), 200
@@ -99,13 +99,13 @@ def get_edit_info(code : str) -> Response:
 def edit_program() -> Response:
     try:
         orig_code = request.form.get("editOriginalProgramCode")
-        orig_name = ProgramsModel.get_record(orig_code)["name"]
+        orig_name = prg_table.get_record(orig_code)["name"]
         code = request.form.get("editProgramPrimaryCode")
         name = request.form.get("editProgramName")
         college_code = request.form.get("editForeignCollegeCode")
 
-        code_dup = ProgramsModel.record_exists("code", code)
-        name_dup =  ProgramsModel.record_exists("name", name)
+        code_dup = prg_table.record_exists("code", code)
+        name_dup =  prg_table.record_exists("name", name)
         if (code_dup and orig_code != code )  or ( name_dup and orig_name != name):
             message = []
             message.append(f"Program code '{code}' already exists! " if code_dup and orig_code != code else "")
@@ -114,7 +114,7 @@ def edit_program() -> Response:
     
 
         new_data = {"code" : code, "name" : name, "collegecode" : college_code}
-        ProgramsModel.update(orig_code, new_data)
+        prg_table.update(orig_code, new_data)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status": "error", "message": f"An error occurred when updating program '{code}'."}), 500
@@ -126,8 +126,8 @@ def edit_program() -> Response:
 def check_duplicates() -> Response:
     code = request.args.get('code', '').strip()
     name = request.args.get('name', '').strip()
-    exists_code = ProgramsModel.record_exists("code", code)
-    exists_name = ProgramsModel.record_exists("name", name)
+    exists_code = prg_table.record_exists("code", code)
+    exists_name = prg_table.record_exists("name", name)
     return  jsonify({
             'exists_code': exists_code,
             'exists_name': exists_name
@@ -137,7 +137,7 @@ def check_duplicates() -> Response:
 @login_required
 def get_program_info(code : str):
     try:
-        program_data = ProgramsModel.program_info(code)
+        program_data = prg_table.program_info(code)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"status" : "error", "message" : f"An error occured when getting the program's data/information"}), 404
