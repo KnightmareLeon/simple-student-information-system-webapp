@@ -78,7 +78,7 @@ let studentTable = $('#StudentTable').DataTable({
             orderable: false,
             searchable: false,
             render: function(data){
-                return `<div style="width: 64px;">
+                return `<div style="width: 64px">
                             <img src="${data}" alt="" class="img-fluid shadow rounded-circle">
                         </div>`;
             }
@@ -108,15 +108,15 @@ setupEditSubmit(
 );
 
 $.fn.filepond.registerPlugin(FilePondPluginImagePreview);
+$.fn.filepond.registerPlugin(FilePondPluginFileValidateSize);
 
-FilePond.setOptions({
-    storeAsFile: true
+$('.pond').filepond({
+    storeAsFile: true,
+    maxFileSize: '5MB',
+    labelMaxFileSizeExceeded: 'File is too large',
+    labelMaxFileSize: 'Maximum file size is {filesize}'
 });
 
-// Turn input element into a pond
-$('.pond').filepond();
-
-// Listen for addfile event
 $('.pond').on('FilePond:addfile', function(e) {
     console.log('file added event', e);
 });

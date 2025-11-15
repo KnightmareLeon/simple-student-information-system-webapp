@@ -27,14 +27,10 @@ class StudentsModel(Base):
 
     def delete(self, key):
         self.general_cache_clear()
-        cache.delete_memoized(self.students_info, key)
-        cache.delete_memoized(self.get_image_path, key)
         super().delete(key)
 
     def update(self, orig_key, data):
         self.general_cache_clear()
-        cache.delete_memoized(self.students_info, orig_key)
-        cache.delete_memoized(self.get_image_path, orig_key)
         super().update(orig_key, data)
 
     @cache.memoize(timeout=300)
@@ -82,9 +78,7 @@ class StudentsModel(Base):
             fetch = FetchMode.ONE,
             as_dict = True
         )
-    
-    @classmethod
-    @cache.memoize(timeout=3500)
+
     def get_image_path(
         self,
         id : str

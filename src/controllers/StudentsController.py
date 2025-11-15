@@ -117,8 +117,10 @@ def add_student() -> Response:
 
 @students_bp.route("/students/<string:id>", methods=["DELETE"])
 @login_required
-def delete_college(id : str) -> Response:
+def delete_student(id : str) -> Response:
     try:
+        img_path = std_table.get_image_path(id)
+        supabase.storage.from_("images").remove([f"{img_path}"])
         std_table.delete(id)
     except Exception as e:
         print(f"Error: {e}")
@@ -128,9 +130,9 @@ def delete_college(id : str) -> Response:
             }), 500
 
     return jsonify({
-                "status": "success",
-                "message": f"Student with ID number '{id}' deleted successfully!"
-            }), 200
+            "status": "success",
+            "message": f"Student with ID number '{id}' deleted successfully!"
+        }), 200
 
 @students_bp.route("/students/<string:code>", methods=["GET"])
 @login_required
