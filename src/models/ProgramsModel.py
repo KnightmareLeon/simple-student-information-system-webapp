@@ -26,18 +26,20 @@ class ProgramsModel(BaseTableModel):
         super().__init__(table_name, primary, columns)
         self.std_table: StudentsModel = std_table
 
+    def create(self, data):
+        cache.delete_memoized(self.get_all_pkeys)
+        super().create(data)
+
     def delete(self, key):
         self.general_cache_clear()
-        cache.delete_memoized(self.program_info, key)
+        cache.delete_memoized(self.get_all_pkeys)
         self.std_table.general_cache_clear()
-        cache.delete_memoized(self.std_table.students_info)
         super().delete(key)
 
     def update(self, orig_key, data):
         self.general_cache_clear()
-        cache.delete_memoized(self.program_info, orig_key)
+        cache.delete_memoized(self.get_all_pkeys)
         self.std_table.general_cache_clear()
-        cache.delete_memoized(self.std_table.students_info)
         super().update(orig_key, data)
 
     @cache.memoize(timeout=300)
@@ -59,8 +61,7 @@ class ProgramsModel(BaseTableModel):
             fetch = FetchMode.ONE
         )
         return 0 if not res else res[1]
-    
-    @cache.memoize(timeout=300)
+
     def program_info(
         self,
         code : str

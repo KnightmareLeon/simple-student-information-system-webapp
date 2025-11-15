@@ -58,8 +58,6 @@ class StudentsModel(Base):
 
         return 0 if res is None else res[1]
 
-    @classmethod
-    @cache.memoize(timeout=3500)
     def students_info(
         self,
         id : str
