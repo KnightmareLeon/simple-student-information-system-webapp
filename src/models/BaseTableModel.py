@@ -9,6 +9,9 @@ class BaseTableModel(ABC):
         self.primary : str = primary
         self.columns : list[str] = columns
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}{self.table_name}"
+
     def get_record(self, id: str) -> dict[str, int | str]:
         """
         Read one data from the table. The method returns a dictionary as the result.

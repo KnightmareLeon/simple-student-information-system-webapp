@@ -1,5 +1,7 @@
 from .DatabaseConnection import execute_query, FetchMode
 from .BaseTableModel import BaseTableModel
+from .ProgramsModel import prg_table as child, ProgramsModel
+from .StudentsModel import std_table as gchild, StudentsModel
 
 from src.cache import cache
 
@@ -16,15 +18,33 @@ class CollegesModel(BaseTableModel):
     )
     """
 
+    def __init__(
+            self,
+            table_name: str,
+            primary: str,
+            columns: list[str],
+            prg_table: ProgramsModel,
+            std_table: StudentsModel
+        ):
+
+        super().__init__(table_name, primary, columns)
+        self.prg_table: ProgramsModel = prg_table
+        self.std_table: StudentsModel = std_table
 
     def delete(self, key):
         self.general_cache_clear()
         cache.delete_memoized(self.college_info, key)
+        self.prg_table.general_cache_clear()
+        cache.delete_memoized(self.prg_table.program_info)
+        cache.delete_memoized(self.std_table.students_info)
         super().delete(key)
 
     def update(self, orig_key, data):
         self.general_cache_clear()
         cache.delete_memoized(self.college_info, orig_key)
+        self.prg_table.general_cache_clear()
+        cache.delete_memoized(self.prg_table.program_info)
+        cache.delete_memoized(self.std_table.students_info)
         super().update(orig_key, data)
 
     @cache.memoize(timeout=300)
@@ -58,5 +78,7 @@ class CollegesModel(BaseTableModel):
 col_table : CollegesModel = CollegesModel(
     table_name="colleges",
     primary="code",
-    columns=["code", "name"]
+    columns=["code", "name"],
+    prg_table=child,
+    std_table=gchild
 )

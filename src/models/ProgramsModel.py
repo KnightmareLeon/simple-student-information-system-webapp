@@ -1,5 +1,6 @@
 from src.models.DatabaseConnection import execute_query, FetchMode
 from .BaseTableModel import BaseTableModel
+from .StudentsModel import std_table as child_table, StudentsModel
 
 from src.cache import cache
 
@@ -21,14 +22,22 @@ class ProgramsModel(BaseTableModel):
     )
     """
 
+    def __init__(self, table_name: str, primary: str, columns: list[str], std_table: StudentsModel):
+        super().__init__(table_name, primary, columns)
+        self.std_table: StudentsModel = std_table
+
     def delete(self, key):
         self.general_cache_clear()
         cache.delete_memoized(self.program_info, key)
+        self.std_table.general_cache_clear()
+        cache.delete_memoized(self.std_table.students_info)
         super().delete(key)
 
     def update(self, orig_key, data):
         self.general_cache_clear()
         cache.delete_memoized(self.program_info, orig_key)
+        self.std_table.general_cache_clear()
+        cache.delete_memoized(self.std_table.students_info)
         super().update(orig_key, data)
 
     @cache.memoize(timeout=300)
@@ -81,5 +90,6 @@ class ProgramsModel(BaseTableModel):
 prg_table : ProgramsModel = ProgramsModel(
     table_name="programs",
     primary="code",
-    columns=["code","name","collegecode"]
+    columns=["code","name","collegecode"],
+    std_table=child_table
 )
