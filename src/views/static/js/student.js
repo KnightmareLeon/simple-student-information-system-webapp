@@ -28,6 +28,7 @@ $('#StudentTable').on('click', '.edit-btn', function () {
             $('#editYearLevel').val(resp.data.yearlevel);
             $('select[name=editForeignProgramCode]').selectpicker('val', resp.data.programcode);
             $('select[name=editForeignProgramCode]').selectpicker('render');
+            $('#editStudentImage').attr('src', resp.data.image);
             $('#editStudentModal').modal('show');
         } else {
             showToast(resp.message, "error");
@@ -103,20 +104,24 @@ setupDeleteHandler(
 setupEditSubmit(
     '#editStudentForm',
     '#StudentTable',
-    '#editStudentModal',
-    'students'
+    '#editStudentModal'
 );
 
 $.fn.filepond.registerPlugin(FilePondPluginImagePreview);
 $.fn.filepond.registerPlugin(FilePondPluginFileValidateSize);
 
-$('.pond').filepond({
-    storeAsFile: true,
-    maxFileSize: '5MB',
-    labelMaxFileSizeExceeded: 'File is too large',
-    labelMaxFileSize: 'Maximum file size is {filesize}'
-});
+FilePond.create(
+    document.querySelector('#addStudentImage'), {
+        storeAsFile: true,
+        maxFileSize: '5MB',
+        labelMaxFileSizeExceeded: 'File is too large',
+        labelMaxFileSize: 'Maximum file size is {filesize}'
+}); 
 
-$('.pond').on('FilePond:addfile', function(e) {
-    console.log('file added event', e);
-});
+FilePond.create(
+    document.querySelector('#editStudentImage'), {
+        storeAsFile: true,
+        maxFileSize: '5MB',
+        labelMaxFileSizeExceeded: 'File is too large',
+        labelMaxFileSize: 'Maximum file size is {filesize}'
+}); 

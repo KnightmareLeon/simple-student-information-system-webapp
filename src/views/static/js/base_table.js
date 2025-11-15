@@ -120,17 +120,21 @@ function setupDeleteHandler(tableSelector, entity) {
     });
 }
 
-function setupEditSubmit(formSelector, tableSelector, modalSelector, entity) {
+function setupEditSubmit(formSelector, tableSelector, modalSelector) {
     $(formSelector).submit(async function(e) {
         e.preventDefault();
 
         const confirmed = await showConfirm('edit');
         if (!confirmed) return;
 
+        const formData = new FormData(this);
+
         $.ajax({
-            url: `/${entity}`,
+            url: $(this).attr('action'),
             type: 'PUT',
-            data: $(this).serialize(),
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function(resp) {
                 if (resp.status === "success") {
                     $(tableSelector).DataTable().ajax.reload(null, false);

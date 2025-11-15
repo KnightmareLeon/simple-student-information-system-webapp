@@ -81,6 +81,5 @@ setupDeleteHandler(
 setupEditSubmit(
     '#editCollegeForm',
     '#CollegeTable',
-    '#editCollegeModal',
-    'colleges'
+    '#editCollegeModal'
 );

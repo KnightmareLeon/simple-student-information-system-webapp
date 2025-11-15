@@ -87,7 +87,7 @@ class StudentsModel(Base):
         Returns the image path for a student.
         """
 
-        return execute_query(
+        res =  execute_query(
             query = (
                 "SELECT s.image "
                 "FROM students as s "
@@ -95,7 +95,9 @@ class StudentsModel(Base):
             ),
             params = (id,),
             fetch = FetchMode.ONE
-        )[0]
+        )
+
+        return res[0] if res is not None else res
 
 std_table : StudentsModel = StudentsModel(
     table_name="students",

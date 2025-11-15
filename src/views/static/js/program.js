@@ -85,6 +85,5 @@ setupDeleteHandler(
 setupEditSubmit(
     '#editProgramForm',
     '#ProgramTable',
-    '#editProgramModal',
-    'programs'
+    '#editProgramModal'
 );

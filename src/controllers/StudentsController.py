@@ -25,7 +25,6 @@ def data() -> Response:
     order_dir = request.form.get("order[0][dir]", "asc")
     column_name = request.form.get(f"columns[{order_column_index}][data]")
 
-
     if column_name:
         column_name = column_name.replace(" ", "").lower()
     else:
@@ -85,8 +84,8 @@ def add_student() -> Response:
         img_bytes = image_file.read()
 
         supabase.storage.from_("images").upload(
-            new_filename,
-            img_bytes,
+            path=new_filename,
+            file=img_bytes,
             file_options={"content-type": image_file.mimetype}
         )
 
@@ -120,7 +119,8 @@ def add_student() -> Response:
 def delete_student(id : str) -> Response:
     try:
         img_path = std_table.get_image_path(id)
-        supabase.storage.from_("images").remove([f"{img_path}"])
+        if img_path is not None:
+            supabase.storage.from_("images").remove([f"{img_path}"])
         std_table.delete(id)
     except Exception as e:
         print(f"Error: {e}")
@@ -139,6 +139,7 @@ def delete_student(id : str) -> Response:
 def get_edit_info(code) -> Response:
     try:
         record_data = std_table.get_record(code)
+        record_data['image'] = get_img_url(record_data['image'], timeout=5000)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({
@@ -154,14 +155,43 @@ def get_edit_info(code) -> Response:
 @login_required
 def edit_student() -> Response:
     orig_id = request.form.get("editOriginalID")
+    orig_img_path = std_table.get_image_path(orig_id)
     id = request.form.get("editID")
     fname = request.form.get("editFirstName")
     lname = request.form.get("editLastName")
     gender = request.form.get("editGender")
     yLevel = request.form.get("editYearLevel")
     program_code = request.form.get("editForeignProgramCode")
+    image_file = request.files.get("editStudentImage")
+
     if std_table.record_exists("id", id) and id != orig_id:
         return jsonify({"status": "error", "message": f"ID {id} already exists"})
+
+    image_path = None
+
+    if image_file and image_file.filename != "":
+        filename = image_file.filename
+
+        if "." not in filename:
+            return jsonify({"status": "error", "message": "Invalid image filename"}), 400
+
+        ext = image_file.filename.rsplit(".", 1)[1].lower()
+
+        if ext not in ("jpg", "jpeg", "png"):
+            return jsonify({"status": "error", "message": "Only JPG and PNG allowed"}), 400
+        new_filename = f"{id}.{ext}"
+
+        img_bytes = image_file.read()
+
+        if orig_img_path is not None:
+            supabase.storage.from_("images").remove([orig_img_path])
+        supabase.storage.from_("images").upload(
+            path=new_filename,
+            file=img_bytes,
+            file_options={"content-type": image_file.mimetype}
+        )
+
+        image_path = new_filename
 
     try:
         new_data = {
@@ -170,7 +200,8 @@ def edit_student() -> Response:
             "lastname" : lname,
             "gender" : gender,
             "yearlevel" : yLevel,
-            "programcode" : program_code
+            "programcode" : program_code,
+            "image" : image_path if image_path is not None else orig_img_path
         }
         
         std_table.update(orig_id, new_data)
