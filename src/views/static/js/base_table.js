@@ -70,13 +70,25 @@ function setupTableModal(formSelector, modalSelector, alertSelector, tableSelect
         const confirmed = await showConfirm('add');
         if (!confirmed) return;
 
-        $.post($(this).attr('action'), $(this).serialize(), function(resp) {
-            if (resp.status === "success") {
-                $(tableSelector).DataTable().ajax.reload(null, false);
-                $(modalSelector).modal('hide');
-                showToast(resp.message, "success");
-            } else {
-                showToast(resp.message, "error");
+        const formData = new FormData(this);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(resp) {
+                if (resp.status === "success") {
+                    $(tableSelector).DataTable().ajax.reload(null, false);
+                    $(modalSelector).modal('hide');
+                    showToast(resp.message, "success");
+                } else {
+                    showToast(resp.message, "error");
+                }
+            },
+            error: function(err) {
+                showToast("An error occurred while sending data", "error");
             }
         });
     });

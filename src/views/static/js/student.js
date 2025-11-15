@@ -106,3 +106,17 @@ setupEditSubmit(
     '#editStudentModal',
     'students'
 );
+
+$.fn.filepond.registerPlugin(FilePondPluginImagePreview);
+
+FilePond.setOptions({
+    storeAsFile: true
+});
+
+// Turn input element into a pond
+$('.pond').filepond();
+
+// Listen for addfile event
+$('.pond').on('FilePond:addfile', function(e) {
+    console.log('file added event', e);
+});

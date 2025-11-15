@@ -4,7 +4,7 @@ from flask_login import login_required
 from src.models.StudentsModel import std_table
 from src.models.ProgramsModel import prg_table
 
-from src.services.Supabase import get_img_url
+from src.services.Supabase import supabase, get_img_url
 
 students_bp = Blueprint("students", __name__)
 
@@ -63,30 +63,57 @@ def add_student() -> Response:
     gender = request.form.get("addGender")
     yLevel = request.form.get("addYearLevel")
     program_code = request.form.get("addForeignProgramCode")
+    image_file = request.files.get("addStudentImage")
 
     if std_table.record_exists("id", id):
         return jsonify({"status": "error", "message": f"ID {id} already exists"})
 
+    image_path = None
+
+    if image_file and image_file.filename != "":
+        filename = image_file.filename
+
+        if "." not in filename:
+            return jsonify({"status": "error", "message": "Invalid image filename"}), 400
+
+        ext = image_file.filename.rsplit(".", 1)[1].lower()
+
+        if ext not in ("jpg", "jpeg", "png"):
+            return jsonify({"status": "error", "message": "Only JPG and PNG allowed"}), 400
+        new_filename = f"{id}.{ext}"
+
+        img_bytes = image_file.read()
+
+        supabase.storage.from_("images").upload(
+            new_filename,
+            img_bytes,
+            file_options={"content-type": image_file.mimetype}
+        )
+
+        image_path = new_filename
+
     try:
-        new_data = {"id" : id,
-                    "firstname" : fname,
-                    "lastname" : lname,
-                    "gender" : gender,
-                    "yearlevel" : yLevel,
-                    "programcode" : program_code
-                    }
+        new_data = {
+            "id" : id,
+            "firstname" : fname,
+            "lastname" : lname,
+            "gender" : gender,
+            "yearlevel" : yLevel,
+            "programcode" : program_code,
+            "image" : image_path
+            }
         std_table.create(new_data)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({
-                "status": "error",
+            "status": "error",
             "message": f"An error occurred when adding student '{fname} {lname}' with ID Number {id}."
-            }), 500
+        }), 500
 
     return jsonify({
-            "status": "success",
-            "message": f"Student '{fname} {lname}' with ID Number {id} added successfully!"
-        }), 201
+        "status": "success",
+        "message": f"Student '{fname} {lname}' with ID Number {id} added successfully!"
+    }), 201
 
 @students_bp.route("/students/<string:id>", methods=["DELETE"])
 @login_required
