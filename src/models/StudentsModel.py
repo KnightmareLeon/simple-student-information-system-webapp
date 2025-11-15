@@ -82,7 +82,7 @@ class StudentsModel(Base):
     def get_image_path(
         self,
         id : str
-    ) -> dict[str] :
+    ) -> str | None :
         """
         Returns the image path for a student.
         """
@@ -98,6 +98,20 @@ class StudentsModel(Base):
         )
 
         return res[0] if res is not None else res
+
+    def delete_avatar(self, id: str):
+        """
+        Delete student's image
+        """
+        self.general_cache_clear()
+        execute_query(
+            query=(
+                f"UPDATE {self.table_name} "
+                "SET image = NULL "
+                f"WHERE {self.primary} = %s"
+            ),
+            params=(id,)
+        )
 
 std_table : StudentsModel = StudentsModel(
     table_name="students",

@@ -41,7 +41,7 @@ def data() -> Response:
     total_filtered_records = std_table.get_total_filtered_records(search_value=search_value)
 
     for r in records:
-        r["actions"] = render_template("partials/_row_buttons.html", key=r["id"])
+        r["actions"] = render_template("partials/_row_buttons_stds.html", key=r["id"])
         r["image"] = get_img_url(r['image'])
 
     total_records = std_table.get_total()
@@ -120,7 +120,7 @@ def delete_student(id : str) -> Response:
     try:
         img_path = std_table.get_image_path(id)
         if img_path is not None:
-            supabase.storage.from_("images").remove([f"{img_path}"])
+            supabase.storage.from_("images").remove([img_path])
         std_table.delete(id)
     except Exception as e:
         print(f"Error: {e}")
@@ -236,3 +236,23 @@ def get_students_info(id : str):
             "message" : f"An error occured when getting the students's data/information"
         }), 404
     return jsonify({"status" : "success", "data": student_data}), 200
+
+@students_bp.route("/students/avatar/<string:id>", methods=["DELETE"])
+@login_required
+def delete_avatar(id: str):
+    try:
+        img_path: str = std_table.get_image_path(id)
+        if img_path is not None:
+            supabase.storage.from_("images").remove([img_path])
+            std_table.delete_avatar(id)
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({
+                "status": "error",
+                "message": "Student avatar deletion failed."
+            }), 500
+
+    return jsonify({
+            "status": "success",
+            "message": f"Student with ID number '{id}' image deleted successfully!"
+        }), 200

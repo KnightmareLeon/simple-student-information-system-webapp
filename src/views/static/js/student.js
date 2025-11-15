@@ -56,8 +56,32 @@ $('#StudentTable').on('click', '.info-btn', function () {
             showToast(resp.message, "error");
         }
     });
-    
 });
+
+//Handle Delete Avatar Button
+$('#StudentTable').on('click', '.delete-avatar-btn', async function(){
+    const recordId = $(this).data('id');
+
+    const confirmed = await showConfirm('delete_avatar');
+
+    if(!confirmed) return;
+
+    $.ajax({
+        url: `/students/avatar/${recordId}`,
+        type: 'DELETE',
+        success: function(resp) {
+            if (resp.status === "success") {
+                $('#StudentTable').DataTable().ajax.reload(null, false);
+                showToast(resp.message, "success");
+            } else {
+                showToast(resp.message, "error");
+            }
+        },
+        error: function(xhr, status, error) {
+            showToast('An error occurred: ' + error, 'error');
+        }
+    });
+})
 
 let studentTable = $('#StudentTable').DataTable({
     processing: true, 

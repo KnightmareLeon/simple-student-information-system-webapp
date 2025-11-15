@@ -21,7 +21,12 @@ function showConfirm(action) {
                 btnClass: 'btn-primary',
                 title: 'Confirm Add Action',
                 text: 'Please confirm that you want to add this record.'
-            }
+            },
+            delete_avatar: {
+                btnClass: 'btn-danger',
+                title: 'Confirm Delete Avatar Action',
+                text: 'Please confirm that you want to delete this record\'s image.'
+            },
         };
 
         const { btnClass, title, text } = config[action] || config.add;
