@@ -87,6 +87,7 @@ function setupTableModal(formSelector, modalSelector, alertSelector, tableSelect
                 if (resp.status === "success") {
                     $(tableSelector).DataTable().ajax.reload(null, false);
                     $(modalSelector).modal('hide');
+                    $('.pond').filepond('removeFiles');
                     showToast(resp.message, "success");
                 } else {
                     showToast(resp.message, "error");
@@ -144,6 +145,7 @@ function setupEditSubmit(formSelector, tableSelector, modalSelector) {
                 if (resp.status === "success") {
                     $(tableSelector).DataTable().ajax.reload(null, false);
                     $(modalSelector).modal('hide');
+                    $('.pond').filepond('removeFiles');
                     showToast(resp.message, "success");
                 } else {
                     showToast(resp.message, "error");

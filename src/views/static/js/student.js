@@ -131,21 +131,14 @@ setupEditSubmit(
     '#editStudentModal'
 );
 
-$.fn.filepond.registerPlugin(FilePondPluginImagePreview);
-$.fn.filepond.registerPlugin(FilePondPluginFileValidateSize);
+$.fn.filepond.registerPlugin(
+    FilePondPluginImagePreview,
+    FilePondPluginFileValidateSize
+);
 
-FilePond.create(
-    document.querySelector('#addStudentImage'), {
-        storeAsFile: true,
-        maxFileSize: '5MB',
-        labelMaxFileSizeExceeded: 'File is too large',
-        labelMaxFileSize: 'Maximum file size is {filesize}'
-}); 
-
-FilePond.create(
-    document.querySelector('#editStudentImage'), {
-        storeAsFile: true,
-        maxFileSize: '5MB',
-        labelMaxFileSizeExceeded: 'File is too large',
-        labelMaxFileSize: 'Maximum file size is {filesize}'
-}); 
+$('.pond').filepond({
+    storeAsFile: true,
+    maxFileSize: '5MB',
+    labelMaxFileSizeExceeded: 'File is too large',
+    labelMaxFileSize: 'Maximum file size is {filesize}'
+});
