@@ -26,7 +26,11 @@ def start_pool():
         password=PASSWORD,
         dbname=DATABASE,
         port=PORT,
-        sslmode="require"
+        sslmode="require",
+        keepalives=1,
+        keepalives_idle=30,
+        keepalives_interval=10,
+        keepalives_count=5
     )
 
 def get_connection():
