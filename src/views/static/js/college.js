@@ -1,23 +1,3 @@
-
-//Duplication Check
-$('#addCollegePrimaryCode, #addCollegeName').on('blur input', function() {
-    let code = $('#addCollegePrimaryCode').val().trim();
-    let name = $('#addCollegeName').val().trim();
-    if (!code && !name) return;
-
-    $.get('/colleges/dup', { code: code, name: name }, function(resp) {
-        const $alert = $('#addCollegeFormAlert');
-        if (resp.exists_code || resp.exists_name) {
-            let msg = [];
-            if (resp.exists_code) msg.push(`Code '${code}' already exists`);
-            if (resp.exists_name) msg.push(`Name '${name}' already exists`);
-            $alert.removeClass('d-none alert-success').addClass('alert-danger').text(msg.join(', '));
-        } else {
-            $alert.addClass('d-none');
-        }
-    });
-});
-
 //Handle Edit Button
 $('#CollegeTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');

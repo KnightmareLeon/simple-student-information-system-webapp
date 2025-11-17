@@ -65,7 +65,7 @@ def add_student() -> Response:
     image_file = request.files.get("addStudentImage")
 
     if std_table.record_exists("id", id):
-        return jsonify({"status": "error", "message": f"ID {id} already exists"})
+        return jsonify({"status": "error", "message": f"ID {id} already exists!"}), 409
 
     image_path = None
 
@@ -144,7 +144,7 @@ def get_edit_info(code) -> Response:
         print(f"Error: {e}")
         return jsonify({
                 "status" : "error",
-                "message" :"Error getting student data for editing."
+                "message" : "Error getting student data for editing."
             })
     return jsonify({
             "status" : "success", 
@@ -165,7 +165,7 @@ def edit_student() -> Response:
     image_file = request.files.get("editStudentImage")
 
     if std_table.record_exists("id", id) and id != orig_id:
-        return jsonify({"status": "error", "message": f"ID {id} already exists"})
+        return jsonify({"status": "error", "message": f"ID {id} already exists"}), 409
 
     image_path = None
 

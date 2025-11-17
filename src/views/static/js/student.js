@@ -1,18 +1,3 @@
-//Check Duplicates
-$('#addID').on('blur input', function() {
-    let id = $('#addID').val().trim();
-    if (!id) return;
-
-    $.get('/students/dup', { id : id }, function(resp) {
-        const $alert = $('#addStudentFormAlert');
-        if (resp.exists) {
-            $alert.removeClass('d-none alert-success').addClass('alert-danger').text(`ID number ${id} already exists.`);
-        } else {
-            $alert.addClass('d-none');
-        }
-    });
-});
-
 //Handle Edit Button
 $('#StudentTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');

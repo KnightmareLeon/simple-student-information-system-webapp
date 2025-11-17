@@ -1,7 +1,6 @@
 {% extends "partials/_base_record_modal.html" %}
 
 {% block modal_body %}
-    <div id="addStudentFormAlert" class="alert d-none" role="alert"></div>
     {% with form_id="addStudentForm", action_url=url_for('students.add_student'), form_action = "add", pKeys=pKeys %}
         {% include "students/partials/_form.html" %}
     {% endwith %}

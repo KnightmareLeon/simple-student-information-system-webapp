@@ -59,7 +59,7 @@ def add_college() -> Response:
         message = []
         message.append(f"College code '{code}' already exists! " if code_dup else "")
         message.append(f"College name '{name}' already exists!" if name_dup else "")
-        return jsonify({"status": "error", "message": " , ".join(message)}), 409
+        return jsonify({"status": "error", "message": "\n".join(message)}), 409
     try:
         new_data = {"code" : code, "name" : name}
         col_table.create(new_data)
@@ -104,7 +104,7 @@ def edit_college() -> Response:
             message = []
             message.append(f"College code '{code}' already exists! " if code_dup and orig_code != code else "")
             message.append(f"College name '{name}' already exists!" if name_dup  and orig_name != name else "")
-            return jsonify({"status": "error", "message": " , ".join(message)}), 409
+            return jsonify({"status": "error", "message": "\n".join(message)}), 409
 
         new_data = {"code" : code, "name" : name}
         col_table.update(orig_code, new_data)

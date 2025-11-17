@@ -85,16 +85,22 @@ function setupTableModal(formSelector, modalSelector, alertSelector, tableSelect
             contentType: false,
             success: function(resp) {
                 if (resp.status === "success") {
+                    showToast(resp.message, "success");
                     $(tableSelector).DataTable().ajax.reload(null, false);
                     $(modalSelector).modal('hide');
                     $('.pond').filepond('removeFiles');
-                    showToast(resp.message, "success");
                 } else {
                     showToast(resp.message, "error");
                 }
             },
-            error: function(err) {
-                showToast("An error occurred while sending data", "error");
+            error: function(xhr, status, error) {
+                const res = xhr.responseJSON;
+
+                if (res) {
+                    showToast(`ERROR ${error}: ${res.message}, STATUS: ${status}`, "error");
+                } else {
+                    showToast(`ERROR ${error}: An error occured sending the data.`, "error");
+                }
             }
         });
     });
@@ -120,7 +126,13 @@ function setupDeleteHandler(tableSelector, entity) {
                 }
             },
             error: function(xhr, status, error) {
-                showToast('An error occurred: ' + error, 'error');
+                const res = xhr.responseJSON;
+
+                if (res) {
+                    showToast(`ERROR ${error}: ${res.message}, STATUS: ${status}`, "error");
+                } else {
+                    showToast(`ERROR ${error}: An error occured.`, "error");
+                }
             }
         });
     });
@@ -143,16 +155,22 @@ function setupEditSubmit(formSelector, tableSelector, modalSelector) {
             contentType: false,
             success: function(resp) {
                 if (resp.status === "success") {
+                    showToast(resp.message, "success");
                     $(tableSelector).DataTable().ajax.reload(null, false);
                     $(modalSelector).modal('hide');
                     $('.pond').filepond('removeFiles');
-                    showToast(resp.message, "success");
                 } else {
                     showToast(resp.message, "error");
                 }
             },
             error: function(xhr, status, error) {
-                showToast('An error occurred: ' + error, 'error');
+                const res = xhr.responseJSON;
+
+                if (res) {
+                    showToast(`ERROR ${error}: ${res.message}, STATUS: ${status}`, "error");
+                } else {
+                    showToast(`ERROR ${error}: An error occured sending the data.`, "error");
+                }
             }
         });
     });

@@ -63,7 +63,7 @@ def add_program() -> Response:
         message = []
         message.append(f"Program code '{code}' already exists! " if code_dup else "")
         message.append(f"Program name '{name}' already exists!" if name_dup else "")
-        return jsonify({"status": "error", "message": " , ".join(message)}), 409
+        return jsonify({"status": "error", "message": "\n".join(message)}), 409
     
     try:
         new_data = {"Code" : code, "name" : name, "collegecode" : college_code}
@@ -110,7 +110,7 @@ def edit_program() -> Response:
             message = []
             message.append(f"Program code '{code}' already exists! " if code_dup and orig_code != code else "")
             message.append(f"Program name '{name}' already exists!" if name_dup and orig_name != name else "")
-            return jsonify({"status": "error", "message": " , ".join(message)}), 409
+            return jsonify({"status": "error", "message": "\n".join(message)}), 409
     
 
         new_data = {"code" : code, "name" : name, "collegecode" : college_code}

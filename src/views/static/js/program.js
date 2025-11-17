@@ -1,22 +1,3 @@
-//Check Duplicates
-$('#addProgramPrimaryCode, #addProgramName').on('blur input', function() {
-    let code = $('#addProgramPrimaryCode').val().trim();
-    let name = $('#addProgramName').val().trim();
-    if (!code && !name) return;
-
-    $.get('/programs/dup', { code: code, name: name }, function(resp) {
-        const $alert = $('#addProgramFormAlert');
-        if (resp.exists_code || resp.exists_name) {
-            let msg = [];
-            if (resp.exists_code) msg.push(`Code '${code}' already exists`);
-            if (resp.exists_name) msg.push(`Name '${name}' already exists`);
-            $alert.removeClass('d-none alert-success').addClass('alert-danger').text(msg.join(', '));
-        } else {
-            $alert.addClass('d-none');
-        }
-    });
-});
-
 //Handle Edit Button
 $('#ProgramTable').on('click', '.edit-btn', function () {
     const recordId = $(this).data('id');
