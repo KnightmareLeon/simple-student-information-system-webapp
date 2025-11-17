@@ -58,10 +58,18 @@ function showConfirm(action) {
     });
 }
 
+function setButtonToLoading(btn) {
+    btn.prop('disabled', true);
+    btn.find('.spinner-border').removeClass('d-none');
+}
 
-function setupTableModal(formSelector, modalSelector, alertSelector, tableSelector, selectpickerSelector) {
+function restoreSubmitButton(btn) {
+    btn.prop('disabled', false);
+    btn.find('.spinner-border').addClass('d-none');
+};
+
+function setupTableModal(formSelector, modalSelector, tableSelector, selectpickerSelector) {
     $(modalSelector).on('show.bs.modal', function () {
-        $(alertSelector).addClass('d-none').removeClass('alert-success alert-danger').text('');
         $(formSelector)[0].reset();
         $(formSelector + ' input, ' + formSelector + ' select').removeClass('is-invalid');
         if (selectpickerSelector !== 'None') {
@@ -75,8 +83,11 @@ function setupTableModal(formSelector, modalSelector, alertSelector, tableSelect
         const confirmed = await showConfirm('add');
         if (!confirmed) return;
 
-        const formData = new FormData(this);
+        const btn = $(`${formSelector}submitbtn`);
+        setButtonToLoading(btn)
 
+        const formData = new FormData(this);
+        
         $.ajax({
             url: $(this).attr('action'),
             method: 'POST',
@@ -84,16 +95,22 @@ function setupTableModal(formSelector, modalSelector, alertSelector, tableSelect
             processData: false,
             contentType: false,
             success: function(resp) {
+                restoreSubmitButton(btn)
                 if (resp.status === "success") {
                     showToast(resp.message, "success");
                     $(tableSelector).DataTable().ajax.reload(null, false);
                     $(modalSelector).modal('hide');
-                    $('.pond').filepond('removeFiles');
+                    if ($('.pond').length) {
+                        $('.pond').filepond('removeFiles');
+                    }
                 } else {
                     showToast(resp.message, "error");
                 }
             },
             error: function(xhr, status, error) {
+
+                restoreSubmitButton(btn)
+
                 const res = xhr.responseJSON;
 
                 if (res) {
@@ -145,6 +162,9 @@ function setupEditSubmit(formSelector, tableSelector, modalSelector) {
         const confirmed = await showConfirm('edit');
         if (!confirmed) return;
 
+        const btn = $(`${formSelector}submitbtn`);
+        setButtonToLoading(btn)
+
         const formData = new FormData(this);
 
         $.ajax({
@@ -154,6 +174,8 @@ function setupEditSubmit(formSelector, tableSelector, modalSelector) {
             processData: false,
             contentType: false,
             success: function(resp) {
+                restoreSubmitButton(btn)
+
                 if (resp.status === "success") {
                     showToast(resp.message, "success");
                     $(tableSelector).DataTable().ajax.reload(null, false);
@@ -164,6 +186,8 @@ function setupEditSubmit(formSelector, tableSelector, modalSelector) {
                 }
             },
             error: function(xhr, status, error) {
+                restoreSubmitButton(btn)
+
                 const res = xhr.responseJSON;
 
                 if (res) {

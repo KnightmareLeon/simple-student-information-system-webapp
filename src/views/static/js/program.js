@@ -52,8 +52,7 @@ let programTable = $('#ProgramTable').DataTable({
 
 setupTableModal(
     '#addProgramForm',
-    '#addProgramModal', 
-    '#addProgramFormAlert',
+    '#addProgramModal',
     '#ProgramTable',
     'addForeignCollegeCode'
 );

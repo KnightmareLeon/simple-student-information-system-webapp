@@ -100,7 +100,6 @@ let studentTable = $('#StudentTable').DataTable({
 setupTableModal(
     '#addStudentForm',
     '#addStudentModal',
-    '#addStudentFormAlert',
     '#StudentTable',
     'addForeignProgramCode'
 );

@@ -48,7 +48,6 @@ let collegeTable = $('#CollegeTable').DataTable({
 setupTableModal(
     '#addCollegeForm',
     '#addCollegeModal',
-    '#addCollegeFormAlert',
     '#CollegeTable',
     'None'
 );
