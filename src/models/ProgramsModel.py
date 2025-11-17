@@ -31,16 +31,14 @@ class ProgramsModel(BaseTableModel):
         super().create(data)
 
     def delete(self, key):
-        self.general_cache_clear()
+        super().delete(key)
         cache.delete_memoized(self.get_all_pkeys)
         self.std_table.general_cache_clear()
-        super().delete(key)
 
     def update(self, orig_key, data):
-        self.general_cache_clear()
+        super().update(orig_key, data)
         cache.delete_memoized(self.get_all_pkeys)
         self.std_table.general_cache_clear()
-        super().update(orig_key, data)
 
     @cache.memoize(timeout=300)
     def total_programs_by_college(

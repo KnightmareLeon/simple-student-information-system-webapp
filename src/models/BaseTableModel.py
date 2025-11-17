@@ -130,8 +130,6 @@ class BaseTableModel(ABC):
         param_plcholders = ",".join([f"%s" for val in values])
         params = tuple(values)
 
-        self.general_cache_clear()
-
         execute_query(
             query = (
                 f"INSERT INTO {self.table_name} ({col_query}) "
@@ -139,6 +137,8 @@ class BaseTableModel(ABC):
             ),
             params = params
         )
+
+        self.general_cache_clear()
 
     def delete(self, key : str):
         """
@@ -150,9 +150,11 @@ class BaseTableModel(ABC):
             params = (key,)
         )
 
+        self.general_cache_clear()
+
     def update(self, orig_key : str, data : dict):
         """
-        Creates a new record for the table.
+        Update a record for the table.
         """
         columns = []
         values = []
@@ -170,6 +172,8 @@ class BaseTableModel(ABC):
             ),
             params = values
         )
+
+        self.general_cache_clear()
 
     @cache.memoize(timeout=300)
     def get_total(self) -> int:

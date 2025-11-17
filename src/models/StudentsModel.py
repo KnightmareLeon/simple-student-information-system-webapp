@@ -25,14 +25,6 @@ class StudentsModel(Base):
     )
     """
 
-    def delete(self, key):
-        self.general_cache_clear()
-        super().delete(key)
-
-    def update(self, orig_key, data):
-        self.general_cache_clear()
-        super().update(orig_key, data)
-
     @cache.memoize(timeout=300)
     def total_students_by_program(
         self,
