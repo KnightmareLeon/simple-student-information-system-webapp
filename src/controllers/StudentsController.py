@@ -179,19 +179,30 @@ def edit_student() -> Response:
 
         if ext not in ("jpg", "jpeg", "png"):
             return jsonify({"status": "error", "message": "Only JPG and PNG allowed"}), 400
-        new_filename = f"{id}.{ext}"
-
-        img_bytes = image_file.read()
+        image_path = f"{id}.{ext}"
 
         if orig_img_path is not None:
             supabase.storage.from_("images").remove([orig_img_path])
+
+        img_bytes = image_file.read()
+
         supabase.storage.from_("images").upload(
-            path=new_filename,
+            path=image_path,
             file=img_bytes,
             file_options={"content-type": image_file.mimetype}
         )
 
-        image_path = new_filename
+    if id != orig_id and orig_img_path is not None and image_path is None:
+
+        ext = orig_img_path.rsplit(".", 1)[1].lower()
+        image_path = f"{id}.{ext}"
+
+        print(image_path)
+        print(orig_img_path)
+        supabase.storage.from_("images").move(
+            orig_img_path,
+            image_path
+        )
 
     try:
         new_data = {

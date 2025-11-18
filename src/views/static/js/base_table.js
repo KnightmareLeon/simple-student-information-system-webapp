@@ -180,7 +180,9 @@ function setupEditSubmit(formSelector, tableSelector, modalSelector) {
                     showToast(resp.message, "success");
                     $(tableSelector).DataTable().ajax.reload(null, false);
                     $(modalSelector).modal('hide');
-                    $('.pond').filepond('removeFiles');
+                    if ($('.pond').length) {
+                        $('.pond').filepond('removeFiles');
+                    }
                 } else {
                     showToast(resp.message, "error");
                 }

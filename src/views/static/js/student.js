@@ -68,6 +68,14 @@ $('#StudentTable').on('click', '.delete-avatar-btn', async function(){
     });
 })
 
+$('#editStudentModal').on('show.bs.modal', function () {
+    $('.pond').filepond('removeFiles');
+});
+
+$('#addStudentModal').on('show.bs.modal', function () {
+    $('.pond').filepond('removeFiles');
+});
+
 let studentTable = $('#StudentTable').DataTable({
     processing: true, 
     serverSide: true,

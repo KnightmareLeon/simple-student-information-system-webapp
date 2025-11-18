@@ -99,7 +99,6 @@ class BaseTableModel(ABC):
             as_dict = True
         )
 
-    @cache.memoize(timeout=300)
     def record_exists(
         self,
         column : str,
