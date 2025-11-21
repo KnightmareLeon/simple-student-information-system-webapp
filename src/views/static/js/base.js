@@ -17,6 +17,6 @@ function showToast(message, type = "success", position = "top-0 start-50 transla
 
 $('#sidebarToggle').on('click', function() {
     const $sidebar = $('.sidebar');
-    $sidebar.toggleClass('minimized');
+    $sidebar.toggleClass('minimized col-md-2');
     document.cookie = "sidebar=" + ($sidebar.hasClass('minimized') ? "minimized" : "expanded") + ";path=/";
 });
