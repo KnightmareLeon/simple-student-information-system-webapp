@@ -4,7 +4,8 @@ Repository for a school project for the course CCC181 - Application
 Development and Emerging Technologies. The first version was made with 
 Java, with the database files saved as .csv files. The second version was 
 also made with Java, but the database system used was made with MySQL.
-This version, the webapp, will be made with Flask, HTML, CSS, Boostrap, Javascript, JQuery, PostgreSQL, and Supabase.
+This version, the webapp, will be made with Flask, HTML, CSS, Boostrap, 
+Javascript, JQuery, PostgreSQL, and Supabase.
 
 ---
 
@@ -34,5 +35,6 @@ This version, the webapp, will be made with Flask, HTML, CSS, Boostrap, Javascri
 ### Feature Application
 
 - **FilePond**  
-  A JavaScript library that uploads anything you throw at it, optimizes images for faster uploads, and offers a great, accessible, silky smooth user experience.  
+  A JavaScript library that uploads anything you throw at it, optimizes images for faster uploads, 
+  and offers a great, accessible, silky smooth user experience.  
   Source: https://pqina.nl/filepond/?ref=pqina#adapters
