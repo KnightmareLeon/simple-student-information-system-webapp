@@ -10,7 +10,6 @@ user_bp = Blueprint("user", __name__)
 class LoginForm(FlaskForm):
     username = StringField('Username', [validators.DataRequired(), validators.Length(min=3, max=20)])
     password = PasswordField('Password', [validators.DataRequired()])
-    remember_me = BooleanField('Remember Me')
     submit = SubmitField("Login")
 
 @user_bp.route('/login', methods=['GET', 'POST'])
@@ -22,7 +21,7 @@ def login():
     if request.method == 'POST' and form.validate():
         user = User.get_by_username(form.username.data)
         if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
+            login_user(user)
 
             next_page = request.args.get('next')
             if not next_page or not next_page.startswith('/'):
