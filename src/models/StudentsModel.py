@@ -2,6 +2,7 @@ from .DatabaseConnection import execute_query, FetchMode
 from .BaseTableModel import BaseTableModel as Base
 
 from src.cache import cache
+from typing import Optional
 
 class StudentsModel(Base):
     """
@@ -24,6 +25,94 @@ class StudentsModel(Base):
         CONSTRAINT last_name_format CHECK (lastname::text ~ '^[[:alpha:]]+( [[:alpha:]]+)*$'::text AND length(lastname::text) <= 100)
     )
     """
+    @cache.memoize(timeout=300)
+    def get_filtered_records(
+            self,
+            search_value: str,
+            sort_column: str,
+            sort_dir: str,
+            limit: int,
+            offset: int,
+            gender: Optional[str] = None,
+            yearlevel: Optional[str] = None,
+            program_code: Optional[str] = None
+        ) -> list[dict]:
+        """
+        Gets all filtered records from the table, optionally filtered by gender, yearlevel, and program_code.
+        """
+        search_query = " OR ".join([f"text({col}) ILIKE %s" for col in self.columns])
+        params = [f"%{search_value}%"] * len(self.columns)
+
+        filter_conditions = []
+
+        # Only add filters if the value is meaningful
+        if gender and str(gender).strip().lower() != "all" and str(gender).strip().lower() != "none":
+            filter_conditions.append("gender = %s")
+            params.append(gender)
+        if yearlevel and str(yearlevel).strip().lower() != "all" and str(yearlevel).strip().lower() != "none":
+            filter_conditions.append("yearlevel = %s")
+            params.append(yearlevel)
+        if program_code and str(program_code).strip().lower() != "all" and str(program_code).strip().lower() != "none":
+            filter_conditions.append("programcode = %s")
+            params.append(program_code)
+
+        where_clause = f"({search_query})"
+        if filter_conditions:
+            where_clause += " AND " + " AND ".join(filter_conditions)
+
+        query = (
+            f"SELECT * \n"
+            f"FROM {self.table_name} \n"
+            f"WHERE {where_clause} "
+            f"ORDER BY {sort_column} {sort_dir} "
+            f"LIMIT {limit} OFFSET {offset}"
+        )
+
+        return execute_query(
+            query=query,
+            params=tuple(params),
+            fetch=FetchMode.ALL,
+            as_dict=True
+        )
+
+
+    @cache.memoize(timeout=300)
+    def get_total_filtered_records(
+            self,
+            search_value: str,
+            gender: Optional[str] = None,
+            yearlevel: Optional[str] = None,
+            program_code: Optional[str] = None
+        ) -> int:
+        """
+        Gets the total number of filtered records from the table, optionally filtered by gender, yearlevel, and program_code.
+        """
+        search_query = " OR ".join([f"text({col}) ILIKE %s" for col in self.columns])
+        params = [f"%{search_value}%"] * len(self.columns)
+
+        filter_conditions = []
+
+        if gender and str(gender).strip().lower() != "all" and str(gender).strip().lower() != "none":
+            filter_conditions.append("gender = %s")
+            params.append(gender)
+        if yearlevel and str(yearlevel).strip().lower() != "all" and str(yearlevel).strip().lower() != "none":
+            filter_conditions.append("yearlevel = %s")
+            params.append(yearlevel)
+        if program_code and str(program_code).strip().lower() != "all" and str(program_code).strip().lower() != "none":
+            filter_conditions.append("programcode = %s")
+            params.append(program_code)
+
+        where_clause = f"({search_query})"
+        if filter_conditions:
+            where_clause += " AND " + " AND ".join(filter_conditions)
+
+        query = f"SELECT COUNT(*) FROM {self.table_name} WHERE {where_clause}"
+
+        return execute_query(
+            query=query,
+            params=tuple(params),
+            fetch=FetchMode.ONE
+        )[0]
 
     @cache.memoize(timeout=300)
     def total_students_by_program(

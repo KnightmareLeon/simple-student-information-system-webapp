@@ -31,6 +31,41 @@
 <th>Image</th>
 {% endblock %}
 
+{% block extrablock %}
+<div>
+    <label class="form-label me-3">Gender:</label>
+    <select class="selectpicker" data-live-search="true" name="gender" >
+        <option value="None">All</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="LGBTQIA+">LGBTQIA+</option>
+    </select>
+</div>
+
+<div>
+    <label for="yearlevel" class="form-label">Year Level</label>
+    <select class="selectpicker" data-live-search="true" name="yearlevel" required>
+        <option value="None">All</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5+">5+</option>
+    </select>
+</div>
+
+<div>
+    <label for="ForeignProgramCode" class="form-label">Program Code</label>
+    <select class="selectpicker" data-live-search="true" name="ForeignProgramCode" required>
+        <option value="None">All</option>
+        {% for pk in reqPKeys %}
+            <option value="{{ pk.code }}">{{ pk.code }}</option>
+        {% endfor %}
+    </select>
+
+</div>
+{% endblock %}
+
 {% block scripts %}
 {{ super() }}
 <!-- FilePond -->

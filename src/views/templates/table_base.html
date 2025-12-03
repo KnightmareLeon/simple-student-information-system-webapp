@@ -9,6 +9,9 @@
 {% block content %}
 <div class="content-table-header d-flex flex-wrap justify-content-between border-bottom py-3 align-items-center">
     <h4 class="mb-2 mb-md-0">{{ header_var}} Records</h4>
+    {% block extrablock %}
+
+    {% endblock %}
     <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add{{ header_var}}Modal">
         <span class="icon me-2">
             {% block addbuttonicon %}

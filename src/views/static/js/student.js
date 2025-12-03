@@ -82,7 +82,12 @@ let studentTable = $('#StudentTable').DataTable({
     scrollX: true,
     ajax: {
         url: "/students/data",
-        type: "POST"
+        type: "POST",
+        data: function(d) {
+                d.gender = $('select[name="gender"]').val();
+                d.yearlevel = $('select[name="yearlevel"]').val();
+                d.ForeignProgramCode = $('select[name="ForeignProgramCode"]').val();
+        }
     },
     columns: [
         { data: "id" },
@@ -103,6 +108,10 @@ let studentTable = $('#StudentTable').DataTable({
         },
         { data: "actions", orderable: false, searchable: false }
     ]
+});
+
+$('select[name="gender"], select[name="yearlevel"], select[name="ForeignProgramCode"]').on('change', function() {
+        studentTable.ajax.reload();
 });
 
 setupTableModal(

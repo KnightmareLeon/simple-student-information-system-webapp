@@ -25,6 +25,10 @@ def data() -> Response:
     order_dir = request.form.get("order[0][dir]", "asc")
     column_name = request.form.get(f"columns[{order_column_index}][data]")
 
+    gender = request.form.get("gender", "All")
+    yearlevel = request.form.get("yearlevel", "All")
+    program_code = request.form.get("ForeignProgramCode", "All")
+
     if column_name:
         column_name = column_name.replace(" ", "").lower()
     else:
@@ -35,10 +39,18 @@ def data() -> Response:
         sort_column=column_name,
         sort_dir=order_dir,
         limit=length,
-        offset=start
+        offset=start,
+        gender=gender,
+        yearlevel=yearlevel,
+        program_code=program_code
     )
 
-    total_filtered_records = std_table.get_total_filtered_records(search_value=search_value)
+    total_filtered_records = std_table.get_total_filtered_records(
+        search_value=search_value,
+        gender=gender,
+        yearlevel=yearlevel,
+        program_code=program_code
+    )
 
     for r in records:
         r["actions"] = render_template("partials/_row_buttons_stds.html", key=r["id"])
