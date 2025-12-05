@@ -38,3 +38,6 @@ Javascript, JQuery, PostgreSQL, and Supabase.
   A JavaScript library that uploads anything you throw at it, optimizes images for faster uploads, 
   and offers a great, accessible, silky smooth user experience.  
   Source: https://pqina.nl/filepond/?ref=pqina#adapters
+
+
+#### Final Grade - 92/100
